@@ -1,0 +1,86 @@
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+
+SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
+if str(SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS))
+
+
+def test_prepare_cifar_exports_balanced_images_and_labels(tmp_path: Path) -> None:
+    from prepare_cifar10 import export_cifar_subset
+
+    images = np.stack(
+        [
+            np.full((8, 8, 3), value, dtype=np.uint8)
+            for value in (10, 20, 30, 40)
+        ]
+    )
+    targets = [0, 0, 1, 1]
+    output = tmp_path / "cifar"
+
+    dataset = export_cifar_subset(
+        images=images,
+        targets=targets,
+        class_names=["airplane", "automobile"],
+        split="test",
+        output=output,
+        limit=4,
+    )
+
+    labels = pd.read_csv(output / "labels.csv")
+    assert len(labels) == 4
+    assert labels["label"].value_counts().to_dict() == {
+        "airplane": 2,
+        "automobile": 2,
+    }
+    assert labels["group_id"].is_unique
+    assert dataset["exported_count"] == 4
+    assert len(list((output / "images").rglob("*.png"))) == 4
+    assert json.loads((output / "dataset_meta.json").read_text())["split"] == "test"
+
+
+def test_compare_v1_v2_recomputes_scores_and_band_transitions(
+    tmp_path: Path,
+) -> None:
+    from compare_v1_v2 import compare_analysis_frames
+
+    sample_ids = [f"s{index}" for index in range(8)]
+    frame = pd.DataFrame(
+        {
+            "sample_id": sample_ids,
+            "label": ["cat"] * 2 + ["dog"] * 6,
+            "sample_status": ["Scored"] * 8,
+            "difficulty_score": np.linspace(0.1, 0.8, 8),
+            "difficulty_band": ["Easy", "Easy", "Medium", "Medium", "Medium", "Hard", "Hard", "Hard"],
+            "blur_laplacian_var": [80, 70, 60, 50, 40, 30, 20, 10],
+            "brightness": [0.5] * 8,
+            "contrast": [0.3, 0.28, 0.26, 0.24, 0.22, 0.20, 0.18, 0.16],
+            "spectral_entropy": np.linspace(0.2, 0.9, 8),
+            "high_freq_energy_ratio": np.linspace(0.1, 0.8, 8),
+            "image_entropy": np.linspace(2, 8, 8),
+            "semantic_complexity": np.linspace(0.1, 0.9, 8),
+            "semantic_available": [True] * 8,
+            "visual_contribution": np.linspace(0.02, 0.1, 8),
+            "semantic_contribution": np.linspace(0.07, 0.6, 8),
+            "label_rarity_contribution": [0.0] * 8,
+        }
+    )
+    output = tmp_path / "comparison"
+
+    report = compare_analysis_frames(frame, before=None, output=output)
+
+    assert report["common_scored_samples"] == 8
+    assert report["mean_v1_score"] > 0
+    assert report["mean_v2_score"] > 0
+    assert report["mean_label_contribution_v1"] > 0
+    assert report["mean_label_contribution_v2"] == 0
+    assert "band_transitions" in report
+    assert (output / "comparison.json").exists()
+    assert (output / "comparison.md").exists()
