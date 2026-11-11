@@ -54,6 +54,7 @@ def _empty_frame() -> pd.DataFrame:
             "path",
             "rel_path",
             "label",
+            "group_id",
             "label_source",
             "label_conflict",
             "conflicting_labels",
@@ -80,6 +81,7 @@ def _folder_rows(
                 "path": path.resolve(),
                 "rel_path": _relative_path(path, root),
                 "label": label,
+                "group_id": "",
                 "label_source": "folder",
                 "label_conflict": False,
                 "conflicting_labels": "",
@@ -107,6 +109,7 @@ def _labeled_rows_from_records(
     label_file: Path,
     path_column: str,
     label_column: str,
+    group_column: str,
 ) -> tuple[list[dict[str, Any]], list[str]]:
     rows: list[dict[str, Any]] = []
     warnings: list[str] = []
@@ -117,11 +120,13 @@ def _labeled_rows_from_records(
             continue
         path = _resolve_labeled_path(raw_path, root, label_file)
         label = str(record.get(label_column, "") or "").strip()
+        group_id = str(record.get(group_column, "") or "").strip()
         rows.append(
             {
                 "path": path,
                 "rel_path": _relative_path(path, root),
                 "label": label,
+                "group_id": group_id,
                 "label_source": "label_file",
                 "label_conflict": False,
                 "conflicting_labels": "",
@@ -135,6 +140,7 @@ def _read_csv_rows(
     label_file: Path,
     path_column: str,
     label_column: str,
+    group_column: str,
 ) -> tuple[list[dict[str, Any]], list[str]]:
     frame = pd.read_csv(label_file, dtype=str, keep_default_na=False)
     missing = [column for column in (path_column, label_column) if column not in frame]
@@ -148,6 +154,7 @@ def _read_csv_rows(
         label_file=label_file,
         path_column=path_column,
         label_column=label_column,
+        group_column=group_column,
     )
 
 
@@ -178,6 +185,7 @@ def _read_json_rows(
     label_file: Path,
     path_column: str,
     label_column: str,
+    group_column: str,
 ) -> tuple[list[dict[str, Any]], list[str]]:
     payload = json.loads(label_file.read_text(encoding="utf-8"))
     records = _json_records(payload)
@@ -187,6 +195,7 @@ def _read_json_rows(
         label_file=label_file,
         path_column=path_column,
         label_column=label_column,
+        group_column=group_column,
     )
 
 
@@ -201,6 +210,13 @@ def _collapse_rows(rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], li
     warnings: list[str] = []
     for path_text, entries in by_path.items():
         labels = sorted({str(entry["label"]) for entry in entries if str(entry["label"])})
+        groups = sorted(
+            {
+                str(entry.get("group_id", ""))
+                for entry in entries
+                if str(entry.get("group_id", ""))
+            }
+        )
         conflict = len(labels) > 1
         first = entries[0]
         collapsed.append(
@@ -208,6 +224,7 @@ def _collapse_rows(rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], li
                 "path": Path(path_text),
                 "rel_path": first["rel_path"],
                 "label": "" if conflict else (labels[0] if labels else ""),
+                "group_id": groups[0] if groups else "",
                 "label_source": first["label_source"],
                 "label_conflict": conflict,
                 "conflicting_labels": ";".join(labels),
@@ -216,6 +233,10 @@ def _collapse_rows(rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], li
         if conflict:
             warnings.append(
                 f"Conflicting labels for {first['rel_path']}: {';'.join(labels)}"
+            )
+        if len(groups) > 1:
+            warnings.append(
+                f"Conflicting group IDs for {first['rel_path']}: {';'.join(groups)}"
             )
     return collapsed, warnings
 
@@ -227,12 +248,14 @@ def _finalize_frame(rows: list[dict[str, Any]]) -> pd.DataFrame:
     frame["sample_id"] = frame["path"].map(_stable_sample_id)
     frame["path"] = frame["path"].map(lambda value: Path(value).resolve())
     frame["label"] = frame["label"].fillna("").astype(str)
+    frame["group_id"] = frame["group_id"].fillna("").astype(str)
     frame["label_conflict"] = frame["label_conflict"].fillna(False).astype(bool)
     columns = [
         "sample_id",
         "path",
         "rel_path",
         "label",
+        "group_id",
         "label_source",
         "label_conflict",
         "conflicting_labels",
@@ -247,6 +270,7 @@ def load_dataset(
     extensions: list[str] | None = None,
     path_column: str = "path",
     label_column: str = "label",
+    group_column: str = "group_id",
     exclude_paths: list[str | Path] | None = None,
 ) -> DatasetLoadResult:
     """Load folder, CSV, or JSON classification datasets without decoding images."""
@@ -280,14 +304,22 @@ def load_dataset(
         if label_path is None:
             raise ValueError("CSV format requires a label file")
         rows, warnings = _read_csv_rows(
-            root_path, label_path, path_column=path_column, label_column=label_column
+            root_path,
+            label_path,
+            path_column=path_column,
+            label_column=label_column,
+            group_column=group_column,
         )
         rows = [row for row in rows if not _is_excluded(row["path"], exclusions)]
     elif format_value == "json":
         if label_path is None:
             raise ValueError("JSON format requires a label file")
         rows, warnings = _read_json_rows(
-            root_path, label_path, path_column=path_column, label_column=label_column
+            root_path,
+            label_path,
+            path_column=path_column,
+            label_column=label_column,
+            group_column=group_column,
         )
         rows = [row for row in rows if not _is_excluded(row["path"], exclusions)]
     else:

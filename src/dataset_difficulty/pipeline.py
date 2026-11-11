@@ -370,6 +370,7 @@ def analyze_dataset(
         extensions=list(data_config.get("extensions", [])),
         path_column=str(data_config.get("path_column", "path")),
         label_column=str(data_config.get("label_column", "label")),
+        group_column=str(data_config.get("group_column", "group_id")),
         exclude_paths=exclusions,
     )
     LOGGER.info("Loaded %d samples", len(loaded.samples))

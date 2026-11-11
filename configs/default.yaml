@@ -6,6 +6,7 @@ data:
   format: auto
   path_column: path
   label_column: label
+  group_column: group_id
   extensions:
     - .jpg
     - .jpeg

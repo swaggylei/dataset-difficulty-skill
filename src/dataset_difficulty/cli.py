@@ -28,6 +28,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--config", help="YAML configuration override")
     parser.add_argument("--path-column", default=None)
     parser.add_argument("--label-column", default=None)
+    parser.add_argument("--group-column", default=None)
     parser.add_argument(
         "--semantic-backend",
         choices=["auto", "clip", "disabled"],
@@ -55,6 +56,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         overrides["data"]["path_column"] = args.path_column
     if args.label_column:
         overrides["data"]["label_column"] = args.label_column
+    if args.group_column:
+        overrides["data"]["group_column"] = args.group_column
     if args.seed is not None:
         overrides["project"] = {"seed": args.seed}
     clip_overrides: dict = {}

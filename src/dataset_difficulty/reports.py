@@ -173,6 +173,7 @@ def _build_html(
     counts = summary.get("counts", {})
     bands = summary.get("difficulty_bands", {})
     splits = summary.get("splits", {})
+    split_diagnostics = summary.get("split_diagnostics", {})
     scored = result.samples[
         result.samples["sample_status"].eq("Scored")
     ].sort_values("difficulty_score", ascending=False)
@@ -268,6 +269,12 @@ def _build_html(
     <p class="note">{html.escape(json.dumps(_sanitize(bands), ensure_ascii=False))}</p>
     <h2>Split Counts</h2>
     <p class="note">{html.escape(json.dumps(_sanitize(splits), ensure_ascii=False))}</p>
+    <h2>Class Distribution</h2>
+    <p class="note">{html.escape(json.dumps(_sanitize(split_diagnostics.get("class_distribution", {})), ensure_ascii=False))}</p>
+    <h2>Difficulty Distribution</h2>
+    <p class="note">{html.escape(json.dumps(_sanitize(split_diagnostics.get("difficulty_distribution", {})), ensure_ascii=False))}</p>
+    <h2>Leakage Risk</h2>
+    <p class="note">{html.escape(json.dumps(_sanitize(split_diagnostics.get("leakage_risk", {})), ensure_ascii=False))}</p>
   </section>
   <section>
     <h2>Hardest Scored Samples</h2>

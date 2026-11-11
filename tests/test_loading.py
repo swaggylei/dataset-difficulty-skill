@@ -66,6 +66,26 @@ def test_csv_loader_marks_conflicting_paths_without_choosing_a_label(
     assert any("conflict" in warning.lower() for warning in result.warnings)
 
 
+def test_csv_loader_reads_optional_group_id(tmp_path: Path) -> None:
+    root = tmp_path / "dataset"
+    _touch(root / "a.jpg")
+    _touch(root / "b.jpg")
+    labels = tmp_path / "labels.csv"
+    labels.write_text(
+        "path,label,group_id\na.jpg,cat,subject-1\nb.jpg,cat,subject-1\n",
+        encoding="utf-8",
+    )
+
+    result = load_dataset(
+        root,
+        label_file=labels,
+        data_format="csv",
+        group_column="group_id",
+    )
+
+    assert result.samples["group_id"].tolist() == ["subject-1", "subject-1"]
+
+
 @pytest.mark.parametrize(
     "payload",
     [
