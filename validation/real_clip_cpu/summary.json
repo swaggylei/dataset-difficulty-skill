@@ -4,7 +4,8 @@
     "anomalies": 2,
     "scored": 38,
     "unscored": 0,
-    "semantic_available": 38
+    "semantic_available": 38,
+    "semantic_embeddings": 38
   },
   "difficulty_bands": {
     "Hard": 13,
@@ -164,33 +165,34 @@
   "semantic_runtime": {
     "backend": "ClipFeatureExtractor",
     "requested_device": "cpu",
-    "device": "not_loaded",
+    "device": "cpu",
     "model_name": "validation/.work/clip_model",
     "batch_size": 8,
-    "model_loaded": false,
+    "model_loaded": true,
     "cache_enabled": true,
     "eligible_sample_count": 38,
-    "cache_hits": 38,
-    "cache_misses": 0,
+    "cache_hits": 0,
+    "cache_misses": 38,
     "failure_count": 0,
     "failure_sample_ids": [],
     "failure_errors": [],
-    "extract_seconds": 0.03943359999993845,
-    "metrics_seconds": 0.007633999999598018,
-    "semantic_seconds": 0.10696530000041093,
+    "extract_seconds": 3.019264600000497,
+    "prepare_seconds": 57.59659060000013,
+    "metrics_seconds": 0.013149600000360806,
+    "semantic_seconds": 60.63999530000001,
     "gpu_peak_allocated_mb": null,
     "gpu_peak_reserved_mb": null
   },
   "performance": {
-    "load_seconds": 0.3124715000003562,
-    "quality_seconds": 0.07279370000014751,
-    "anomaly_seconds": 0.006703399999423709,
-    "semantic_seconds": 0.10701770000014221,
-    "scoring_seconds": 0.04437980000056996,
-    "split_seconds": 0.04085800000029849,
-    "analysis_seconds": 0.5914500000008047,
-    "report_seconds": 1.4025406999999177,
-    "total_seconds": 1.9939907000007224
+    "load_seconds": 0.2862249999998312,
+    "quality_seconds": 0.08391729999948438,
+    "anomaly_seconds": 0.011671999999634863,
+    "semantic_seconds": 60.691079600000194,
+    "scoring_seconds": 0.05760120000013558,
+    "split_seconds": 0.05690709999998944,
+    "analysis_seconds": 61.19188199999917,
+    "report_seconds": 1.5551867000003767,
+    "total_seconds": 62.747068699999545
   },
   "configuration": {
     "project": {
@@ -202,6 +204,7 @@
       "path_column": "path",
       "label_column": "label",
       "group_column": "group_id",
+      "group_column_required": false,
       "extensions": [
         ".jpg",
         ".jpeg",
@@ -247,7 +250,7 @@
       },
       "cache": {
         "enabled": true,
-        "directory": ".work/clip_cpu_cache"
+        "directory": ".work/clip_cpu_cache_v2"
       }
     },
     "difficulty": {
@@ -301,7 +304,7 @@
   "warnings": [
     "Actual train ratio 0.789 differs from requested 0.700 by more than 0.05."
   ],
-  "generated_at_utc": "2026-11-11T11:47:44.348058+00:00",
+  "generated_at_utc": "2026-11-11T12:01:12.747325+00:00",
   "input_root": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test",
   "label_file": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\clip_small_labels.csv",
   "output_directory": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\real_clip_cpu",

@@ -56,7 +56,9 @@ def test_semantic_metrics_leave_unavailable_embedding_null() -> None:
 
     result = compute_semantic_metrics(samples, base, augmented, load_config())
 
-    assert result["semantic_available"].tolist() == [True, False]
+    assert result["semantic_embedding_available"].tolist() == [True, False]
+    assert result["semantic_available"].tolist() == [False, False]
+    assert np.isnan(result.loc[0, "semantic_complexity"])
     assert np.isnan(result.loc[1, "semantic_complexity"])
     assert np.isnan(result.loc[1, "class_centroid_distance"])
 
@@ -70,3 +72,15 @@ def test_singleton_class_does_not_fabricate_intra_class_distance() -> None:
 
     assert np.isnan(result.loc[0, "class_centroid_distance"])
     assert np.isnan(result.loc[0, "outlier_component"])
+
+
+def test_embedding_available_does_not_imply_usable_semantic_complexity() -> None:
+    samples = pd.DataFrame({"sample_id": ["a"], "label": ["cat"]})
+    base = np.asarray([[1.0, 0.0]])
+    augmented = np.array([[[np.nan, np.nan]]])
+
+    result = compute_semantic_metrics(samples, base, augmented, load_config())
+
+    assert result.loc[0, "semantic_embedding_available"]
+    assert not result.loc[0, "semantic_available"]
+    assert np.isnan(result.loc[0, "semantic_complexity"])

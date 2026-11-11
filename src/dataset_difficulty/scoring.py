@@ -118,6 +118,7 @@ def score_difficulty(
     ]
     semantic_columns = [
         "semantic_available",
+        "semantic_embedding_available",
         "semantic_complexity",
         "semantic_component_coverage",
         "class_centroid_distance",
@@ -128,6 +129,9 @@ def score_difficulty(
         "outlier_component",
         "confusion_component",
         "instability_component",
+        "outlier_available",
+        "confusion_available",
+        "instability_available",
     ]
     frame = _merge_missing_columns(samples.copy(), quality, quality_columns)
     frame = _merge_missing_columns(frame, semantic, semantic_columns)
@@ -244,11 +248,10 @@ def score_difficulty(
     frame["visual_quality_risk"] = (issue_counts / 6.0).clip(0.0, 1.0)
 
     labels = frame["label"].fillna("").astype(str)
-    eligible_labels = labels[eligible & (labels != "")]
-    class_counts = eligible_labels.value_counts()
+    class_counts = labels[labels != ""].value_counts()
     maximum_count = float(class_counts.max()) if not class_counts.empty else np.nan
     frame["class_count"] = labels.map(class_counts).fillna(0).astype(int)
-    for index in frame.index[eligible]:
+    for index in frame.index:
         label = labels.loc[index]
         count = frame.loc[index, "class_count"]
         if label and np.isfinite(maximum_count) and maximum_count > 0:
@@ -262,8 +265,8 @@ def score_difficulty(
     frame.loc[eligible, "semantic_difficulty_component"] = frame.loc[
         eligible, "difficulty_semantic_component"
     ]
-    frame.loc[eligible, "label_rarity_weight"] = 0.0
-    frame.loc[eligible, "label_rarity_contribution"] = 0.0
+    frame["label_rarity_weight"] = 0.0
+    frame["label_rarity_contribution"] = 0.0
     frame["label_rarity_in_difficulty"] = False
 
     weights = config.get("difficulty", {}).get("weights", {})

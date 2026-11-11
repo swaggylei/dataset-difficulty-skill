@@ -87,6 +87,7 @@ def _empty_semantic(samples: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(
         {
             "sample_id": samples["sample_id"].to_numpy(),
+            "semantic_embedding_available": False,
             "semantic_available": False,
             "class_centroid_distance": np.nan,
             "class_confusion_risk": np.nan,
@@ -96,6 +97,9 @@ def _empty_semantic(samples: pd.DataFrame) -> pd.DataFrame:
             "outlier_component": np.nan,
             "confusion_component": np.nan,
             "instability_component": np.nan,
+            "outlier_available": False,
+            "confusion_available": False,
+            "instability_available": False,
             "semantic_complexity": np.nan,
             "semantic_component_coverage": 0.0,
         }
@@ -121,6 +125,7 @@ def _empty_semantic_runtime(
         "failure_sample_ids": [],
         "failure_errors": [],
         "extract_seconds": 0.0,
+        "prepare_seconds": 0.0,
         "metrics_seconds": 0.0,
         "semantic_seconds": 0.0,
         "gpu_peak_allocated_mb": None,
@@ -132,6 +137,10 @@ def _preflight_extractor(
     extractor: FeatureExtractor,
     samples: pd.DataFrame,
 ) -> None:
+    prepare = getattr(extractor, "prepare", None)
+    if callable(prepare):
+        prepare()
+        return
     last_image_error: Exception | None = None
     for _, sample in samples.iterrows():
         path = Path(sample["path"])
@@ -235,9 +244,11 @@ def _semantic_analysis(
         cache = FeatureCache(cache_value, signature)
     else:
         cache = NullFeatureCache(signature)
+    prepare_seconds = 0.0
     if extractor is None and not _cache_covers_samples(
         cache, eligible_samples, augmentations
     ):
+        prepare_started = time.perf_counter()
         try:
             _preflight_extractor(active_extractor, eligible_samples)
         except Exception as error:
@@ -261,9 +272,13 @@ def _semantic_analysis(
                     "requested_device": getattr(active_extractor, "device", "unknown"),
                     "model_name": getattr(active_extractor, "model_name", None),
                     "batch_size": batch_size,
+                    "prepare_seconds": float(
+                        time.perf_counter() - prepare_started
+                    ),
                     "semantic_seconds": time.perf_counter() - semantic_started,
                 },
             )
+        prepare_seconds = time.perf_counter() - prepare_started
     extract_started = time.perf_counter()
     feature_result = extract_features(
         eligible_samples,
@@ -288,9 +303,16 @@ def _semantic_analysis(
         if column == "sample_id":
             continue
         semantic[column] = semantic["sample_id"].map(semantic_by_id[column])
-    semantic["semantic_available"] = semantic["semantic_available"].map(
-        lambda value: bool(value) if pd.notna(value) else False
-    ).astype(bool)
+    for flag in (
+        "semantic_embedding_available",
+        "semantic_available",
+        "outlier_available",
+        "confusion_available",
+        "instability_available",
+    ):
+        semantic[flag] = semantic[flag].map(
+            lambda value: bool(value) if pd.notna(value) else False
+        ).astype(bool)
     semantic["semantic_component_coverage"] = (
         semantic["semantic_component_coverage"].fillna(0.0)
     )
@@ -339,6 +361,7 @@ def _semantic_analysis(
             if error
         ],
         "extract_seconds": float(extract_seconds),
+        "prepare_seconds": float(prepare_seconds),
         "metrics_seconds": float(metrics_seconds),
         "semantic_seconds": float(time.perf_counter() - semantic_started),
     }
@@ -399,6 +422,9 @@ def _build_summary(
             "unscored": int(status_counts.get("Unscored", 0)),
             "semantic_available": int(
                 samples["semantic_available"].fillna(False).sum()
+            ),
+            "semantic_embeddings": int(
+                samples["semantic_embedding_available"].fillna(False).sum()
             ),
         },
         "difficulty_bands": {
@@ -465,6 +491,10 @@ def analyze_dataset(
         path_column=str(data_config.get("path_column", "path")),
         label_column=str(data_config.get("label_column", "label")),
         group_column=str(data_config.get("group_column", "group_id")),
+        require_group_column=(
+            str(data_config.get("group_column", "group_id")) != "group_id"
+            or bool(data_config.get("group_column_required", False))
+        ),
         exclude_paths=exclusions,
     )
     load_seconds = time.perf_counter() - load_started

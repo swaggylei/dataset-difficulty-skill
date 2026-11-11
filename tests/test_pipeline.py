@@ -217,6 +217,27 @@ def test_preflight_skips_unreadable_image_and_reaches_next(
     _preflight_extractor(extractor, samples)
 
 
+def test_preflight_uses_prepare_without_extra_inference(tmp_path: Path) -> None:
+    image = tmp_path / "image.png"
+    write_image(image, np.full((32, 32, 3), 127, dtype=np.uint8))
+    samples = pd.DataFrame({"path": [image]})
+
+    class PrepareOnlyExtractor(TintedFakeExtractor):
+        def __init__(self) -> None:
+            super().__init__()
+            self.prepared = 0
+
+        def prepare(self) -> None:
+            self.prepared += 1
+
+    extractor = PrepareOnlyExtractor()
+
+    _preflight_extractor(extractor, samples)
+
+    assert extractor.prepared == 1
+    assert extractor.calls == 0
+
+
 def test_pipeline_warns_when_near_duplicate_comparison_is_skipped(
     tmp_path: Path,
 ) -> None:
@@ -280,3 +301,4 @@ def test_pipeline_summary_records_runtime_cache_and_failure_ids(
     assert runtime["failure_count"] > 0
     assert runtime["failure_sample_ids"]
     assert runtime["device"] in {"cpu", "cuda", "not_loaded"}
+    assert "prepare_seconds" in runtime

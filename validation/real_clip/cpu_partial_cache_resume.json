@@ -4,7 +4,8 @@
     "anomalies": 2,
     "scored": 38,
     "unscored": 0,
-    "semantic_available": 38
+    "semantic_available": 38,
+    "semantic_embeddings": 38
   },
   "difficulty_bands": {
     "Hard": 13,
@@ -175,33 +176,35 @@
     "failure_count": 0,
     "failure_sample_ids": [],
     "failure_errors": [],
-    "extract_seconds": 2.06121660000008,
-    "metrics_seconds": 0.008251100000052247,
-    "semantic_seconds": 50.53437590000067,
+    "extract_seconds": 2.1161960999997973,
+    "prepare_seconds": 49.40161960000023,
+    "metrics_seconds": 0.010283199999321369,
+    "semantic_seconds": 51.537256999999045,
     "gpu_peak_allocated_mb": null,
     "gpu_peak_reserved_mb": null
   },
   "performance": {
-    "load_seconds": 0.25647810000009486,
-    "quality_seconds": 0.07652380000035919,
-    "anomaly_seconds": 0.006928800000423507,
-    "semantic_seconds": 50.584611600000244,
-    "scoring_seconds": 0.04260710000016843,
-    "split_seconds": 0.04488089999995282,
-    "analysis_seconds": 51.01644699999997,
-    "report_seconds": 1.3875059000001784,
-    "total_seconds": 52.40395290000015
+    "load_seconds": 0.30093070000020816,
+    "quality_seconds": 0.08640469999954803,
+    "anomaly_seconds": 0.007600799999636365,
+    "semantic_seconds": 51.59059470000011,
+    "scoring_seconds": 0.0511822000007669,
+    "split_seconds": 0.055218800000147894,
+    "analysis_seconds": 52.09642290000011,
+    "report_seconds": 1.5123527000014292,
+    "total_seconds": 53.608775600001536
   },
   "configuration": {
     "project": {
       "seed": 42,
-      "version": "0.1.0"
+      "version": "0.2.0"
     },
     "data": {
       "format": "csv",
       "path_column": "path",
       "label_column": "label",
       "group_column": "group_id",
+      "group_column_required": false,
       "extensions": [
         ".jpg",
         ".jpeg",
@@ -247,7 +250,7 @@
       },
       "cache": {
         "enabled": true,
-        "directory": ".work/clip_resume_cache2"
+        "directory": ".work/clip_resume_cache_v2"
       }
     },
     "difficulty": {
@@ -295,13 +298,13 @@
       "preview_count": 12,
       "preview_columns": 4,
       "image_thumbnail_size": 180,
-      "title": "CIFAR-10 CLIP Partial Cache Resume"
+      "title": "CIFAR-10 CLIP Resume Validation"
     }
   },
   "warnings": [
     "Actual train ratio 0.789 differs from requested 0.700 by more than 0.05."
   ],
-  "generated_at_utc": "2026-11-11T11:32:20.715353+00:00",
+  "generated_at_utc": "2026-11-11T12:05:21.140818+00:00",
   "input_root": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test",
   "label_file": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\clip_small_labels.csv",
   "output_directory": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\real_clip_cpu_resume2",

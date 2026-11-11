@@ -62,15 +62,15 @@ def compute_semantic_metrics(
     semantic_config = config.get("semantic", {})
     minimum_class_size = int(semantic_config.get("min_class_samples", 2))
     labels = samples["label"].fillna("").astype(str).to_numpy()
-    available = np.isfinite(base_array).all(axis=1) & (labels != "")
+    embedding_available = np.isfinite(base_array).all(axis=1) & (labels != "")
 
     centroid_distances = np.full(len(samples), np.nan, dtype=np.float64)
     confusion_risk = np.full(len(samples), np.nan, dtype=np.float64)
     cross_class_margin = np.full(len(samples), np.nan, dtype=np.float64)
     centroid_by_label: dict[str, np.ndarray] = {}
 
-    for label in sorted(set(labels[available])):
-        member_indices = np.flatnonzero(available & (labels == label))
+    for label in sorted(set(labels[embedding_available])):
+        member_indices = np.flatnonzero(embedding_available & (labels == label))
         if len(member_indices) == 0:
             continue
         centroid = base_array[member_indices].mean(axis=0)
@@ -84,7 +84,7 @@ def compute_semantic_metrics(
     if len(centroid_by_label) >= 2:
         labels_with_centroid = list(centroid_by_label)
         centroid_matrix = np.vstack([centroid_by_label[label] for label in labels_with_centroid])
-        for index in np.flatnonzero(available):
+        for index in np.flatnonzero(embedding_available):
             label = labels[index]
             if label not in centroid_by_label:
                 continue
@@ -100,7 +100,7 @@ def compute_semantic_metrics(
     augmentation_stability = np.full(len(samples), np.nan, dtype=np.float64)
     augmentation_instability = np.full(len(samples), np.nan, dtype=np.float64)
     for index in range(len(samples)):
-        if not available[index] or augmented_array.shape[1] == 0:
+        if not embedding_available[index] or augmented_array.shape[1] == 0:
             continue
         variants = _normalize_rows(augmented_array[index])
         valid_variants = np.isfinite(variants).all(axis=1)
@@ -114,7 +114,7 @@ def compute_semantic_metrics(
     frame = pd.DataFrame(
         {
             "sample_id": samples["sample_id"].to_numpy(),
-            "semantic_available": available,
+            "semantic_embedding_available": embedding_available,
             "class_centroid_distance": centroid_distances,
             "class_confusion_risk": confusion_risk,
             "cross_class_margin": cross_class_margin,
@@ -133,8 +133,10 @@ def compute_semantic_metrics(
         ("instability_component", float(semantic_weights.get("instability", 0.20))),
     ]
     complexity, coverage = _weighted_component(frame, specifications)
-    complexity.loc[~frame["semantic_available"]] = np.nan
-    coverage.loc[~frame["semantic_available"]] = 0.0
     frame["semantic_complexity"] = complexity
     frame["semantic_component_coverage"] = coverage
+    frame["semantic_available"] = frame["semantic_complexity"].notna()
+    frame["outlier_available"] = frame["outlier_component"].notna()
+    frame["confusion_available"] = frame["confusion_component"].notna()
+    frame["instability_available"] = frame["instability_component"].notna()
     return frame

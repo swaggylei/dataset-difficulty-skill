@@ -138,13 +138,10 @@ def compare_analysis_frames(
                 "difficulty_band": "v1_difficulty_band",
             }
         )
-        merged = recomputed.set_index("sample_id").join(v1, how="inner")
-        if "v1_visual_contribution" not in merged:
-            merged["v1_visual_contribution"] = np.nan
-        if "v1_semantic_contribution" not in merged:
-            merged["v1_semantic_contribution"] = np.nan
-        if "v1_label_contribution" not in merged:
-            merged["v1_label_contribution"] = np.nan
+        computed = recomputed.set_index("sample_id").drop(
+            columns=["v1_difficulty_score", "v1_difficulty_band"]
+        )
+        merged = computed.join(v1, how="inner")
     else:
         merged = recomputed.set_index("sample_id")
 

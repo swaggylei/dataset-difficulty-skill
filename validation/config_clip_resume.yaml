@@ -15,7 +15,7 @@ semantic:
     augmentations: 1
   cache:
     enabled: true
-    directory: .work/clip_resume_cache2
+    directory: .work/clip_resume_cache_v2
 report:
   preview_count: 12
   title: "CIFAR-10 CLIP Resume Validation"

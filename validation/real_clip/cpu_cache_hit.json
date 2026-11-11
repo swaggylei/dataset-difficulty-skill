@@ -4,7 +4,8 @@
     "anomalies": 2,
     "scored": 38,
     "unscored": 0,
-    "semantic_available": 38
+    "semantic_available": 38,
+    "semantic_embeddings": 38
   },
   "difficulty_bands": {
     "Hard": 13,
@@ -175,33 +176,35 @@
     "failure_count": 0,
     "failure_sample_ids": [],
     "failure_errors": [],
-    "extract_seconds": 0.03535019999981159,
-    "metrics_seconds": 0.007272700000612531,
-    "semantic_seconds": 0.3463954000008016,
+    "extract_seconds": 0.04031900000063615,
+    "prepare_seconds": 0.0,
+    "metrics_seconds": 0.008500399999320507,
+    "semantic_seconds": 0.3962075999997978,
     "gpu_peak_allocated_mb": null,
     "gpu_peak_reserved_mb": null
   },
   "performance": {
-    "load_seconds": 0.2435105000004114,
-    "quality_seconds": 0.060607700000218756,
-    "anomaly_seconds": 0.006489500000498083,
-    "semantic_seconds": 0.34642429999985325,
-    "scoring_seconds": 0.03797209999993356,
-    "split_seconds": 0.038242699999500473,
-    "analysis_seconds": 0.7380668999994668,
-    "report_seconds": 1.1682350999999471,
-    "total_seconds": 1.906301999999414
+    "load_seconds": 0.3095579999999245,
+    "quality_seconds": 0.07140350000008766,
+    "anomaly_seconds": 0.006811799999923096,
+    "semantic_seconds": 0.3962810000002719,
+    "scoring_seconds": 0.04621870000028139,
+    "split_seconds": 0.04291120000016235,
+    "analysis_seconds": 0.8793908999996347,
+    "report_seconds": 1.4111017000004722,
+    "total_seconds": 2.290492600000107
   },
   "configuration": {
     "project": {
       "seed": 42,
-      "version": "0.1.0"
+      "version": "0.2.0"
     },
     "data": {
       "format": "csv",
       "path_column": "path",
       "label_column": "label",
       "group_column": "group_id",
+      "group_column_required": false,
       "extensions": [
         ".jpg",
         ".jpeg",
@@ -247,7 +250,7 @@
       },
       "cache": {
         "enabled": true,
-        "directory": ".work/clip_cpu_cache"
+        "directory": ".work/clip_cpu_cache_v2"
       }
     },
     "difficulty": {
@@ -301,10 +304,10 @@
   "warnings": [
     "Actual train ratio 0.789 differs from requested 0.700 by more than 0.05."
   ],
-  "generated_at_utc": "2026-11-11T11:28:13.912968+00:00",
+  "generated_at_utc": "2026-11-11T12:03:57.707340+00:00",
   "input_root": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test",
   "label_file": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\clip_small_labels.csv",
-  "output_directory": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\real_clip_cpu_cache_hit",
+  "output_directory": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\cpu_cache_check",
   "artifacts": [
     "samples.csv",
     "summary.json",

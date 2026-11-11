@@ -402,6 +402,11 @@ class ClipFeatureExtractor:
         self._torch = torch
         self._runtime_device = runtime_device
 
+    def prepare(self) -> None:
+        """Load the model/processor without running an extra image forward pass."""
+
+        self._load()
+
     def encode_images(self, images: Sequence[Image.Image]) -> np.ndarray:
         if not images:
             return np.empty((0, 0), dtype=np.float64)

@@ -7,6 +7,7 @@ data:
   path_column: path
   label_column: label
   group_column: group_id
+  group_column_required: false
   extensions:
     - .jpg
     - .jpeg

@@ -10,12 +10,12 @@ semantic:
   clip:
     model_name: openai/clip-vit-base-patch32
     device: cuda
-    batch_size: 8
+    batch_size: 32
     allow_download: true
     augmentations: 1
   cache:
     enabled: true
-    directory: .work/clip_gpu_cache
+    directory: .work/clip_gpu_cache_v2
 report:
   preview_count: 12
-  title: "CIFAR-10 CLIP GPU Validation"
+  title: "CIFAR-10 CLIP GPU Batch-32 Validation"

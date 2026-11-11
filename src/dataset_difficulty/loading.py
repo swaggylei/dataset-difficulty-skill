@@ -110,9 +110,21 @@ def _labeled_rows_from_records(
     path_column: str,
     label_column: str,
     group_column: str,
+    require_group_column: bool,
 ) -> tuple[list[dict[str, Any]], list[str]]:
     rows: list[dict[str, Any]] = []
     warnings: list[str] = []
+    if require_group_column and records:
+        missing_group = [
+            index
+            for index, record in enumerate(records, start=2)
+            if group_column not in record
+        ]
+        if missing_group:
+            raise ValueError(
+                f"Required group column {group_column!r} is missing from "
+                f"label records {missing_group[:5]}"
+            )
     for index, record in enumerate(records, start=2):
         raw_path = str(record.get(path_column, "") or "").strip()
         if not raw_path:
@@ -141,6 +153,7 @@ def _read_csv_rows(
     path_column: str,
     label_column: str,
     group_column: str,
+    require_group_column: bool,
 ) -> tuple[list[dict[str, Any]], list[str]]:
     frame = pd.read_csv(label_file, dtype=str, keep_default_na=False)
     missing = [column for column in (path_column, label_column) if column not in frame]
@@ -155,6 +168,7 @@ def _read_csv_rows(
         path_column=path_column,
         label_column=label_column,
         group_column=group_column,
+        require_group_column=require_group_column,
     )
 
 
@@ -186,6 +200,7 @@ def _read_json_rows(
     path_column: str,
     label_column: str,
     group_column: str,
+    require_group_column: bool,
 ) -> tuple[list[dict[str, Any]], list[str]]:
     payload = json.loads(label_file.read_text(encoding="utf-8"))
     records = _json_records(payload)
@@ -196,6 +211,7 @@ def _read_json_rows(
         path_column=path_column,
         label_column=label_column,
         group_column=group_column,
+        require_group_column=require_group_column,
     )
 
 
@@ -271,6 +287,7 @@ def load_dataset(
     path_column: str = "path",
     label_column: str = "label",
     group_column: str = "group_id",
+    require_group_column: bool = False,
     exclude_paths: list[str | Path] | None = None,
 ) -> DatasetLoadResult:
     """Load folder, CSV, or JSON classification datasets without decoding images."""
@@ -295,6 +312,10 @@ def load_dataset(
             raise ValueError("Cannot infer label format; use csv or json explicitly")
 
     if format_value == "folder":
+        if require_group_column:
+            raise ValueError(
+                "A group column was requested but folder format has no group metadata"
+            )
         rows, warnings = _folder_rows(
             root_path,
             _normalize_extensions(extensions),
@@ -309,6 +330,7 @@ def load_dataset(
             path_column=path_column,
             label_column=label_column,
             group_column=group_column,
+            require_group_column=require_group_column,
         )
         rows = [row for row in rows if not _is_excluded(row["path"], exclusions)]
     elif format_value == "json":
@@ -320,6 +342,7 @@ def load_dataset(
             path_column=path_column,
             label_column=label_column,
             group_column=group_column,
+            require_group_column=require_group_column,
         )
         rows = [row for row in rows if not _is_excluded(row["path"], exclusions)]
     else:
@@ -327,6 +350,12 @@ def load_dataset(
 
     collapsed, conflict_warnings = _collapse_rows(rows)
     warnings.extend(conflict_warnings)
+    if require_group_column and not any(
+        str(row.get("group_id", "")).strip() for row in collapsed
+    ):
+        raise ValueError(
+            f"Required group column {group_column!r} contains no non-empty values"
+        )
     if not collapsed:
         warnings.append("No supported image files were found.")
     return DatasetLoadResult(

@@ -86,6 +86,24 @@ def test_csv_loader_reads_optional_group_id(tmp_path: Path) -> None:
     assert result.samples["group_id"].tolist() == ["subject-1", "subject-1"]
 
 
+def test_explicit_missing_group_column_raises_instead_of_silent_leakage(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "dataset"
+    _touch(root / "a.jpg")
+    labels = tmp_path / "labels.csv"
+    labels.write_text("path,label\na.jpg,cat\n", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="group column"):
+        load_dataset(
+            root,
+            label_file=labels,
+            data_format="csv",
+            group_column="subject_id",
+            require_group_column=True,
+        )
+
+
 @pytest.mark.parametrize(
     "payload",
     [

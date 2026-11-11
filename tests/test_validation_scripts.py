@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from PIL import Image
+import pytest
 
 
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
@@ -118,3 +119,45 @@ def test_prepare_cifar_exports_huggingface_parquet(tmp_path: Path) -> None:
         "airplane": 2,
         "automobile": 2,
     }
+
+
+def test_compare_v1_v2_uses_explicit_before_scores(tmp_path: Path) -> None:
+    from compare_v1_v2 import compare_analysis_frames
+
+    after = pd.DataFrame(
+        {
+            "sample_id": ["a", "b", "c", "d"],
+            "label": ["cat", "cat", "dog", "dog"],
+            "sample_status": ["Scored"] * 4,
+            "difficulty_score": [0.2, 0.4, 0.6, 0.8],
+            "difficulty_band": ["Easy", "Medium", "Medium", "Hard"],
+            "blur_laplacian_var": [40, 30, 20, 10],
+            "brightness": [0.5] * 4,
+            "contrast": [0.2] * 4,
+            "spectral_entropy": [0.2, 0.4, 0.6, 0.8],
+            "high_freq_energy_ratio": [0.1, 0.2, 0.3, 0.4],
+            "image_entropy": [2, 3, 4, 5],
+            "semantic_complexity": [0.2, 0.4, 0.6, 0.8],
+            "semantic_available": [True] * 4,
+            "visual_contribution": [0.06, 0.12, 0.18, 0.24],
+            "semantic_contribution": [0.14, 0.28, 0.42, 0.56],
+            "label_rarity_contribution": [0.0] * 4,
+        }
+    )
+    before = pd.DataFrame(
+        {
+            "sample_id": ["a", "b", "c", "d"],
+            "difficulty_score": [0.9, 0.7, 0.5, 0.3],
+            "difficulty_band": ["Hard", "Medium", "Medium", "Easy"],
+        }
+    )
+
+    report = compare_analysis_frames(
+        after,
+        before=before,
+        output=tmp_path / "comparison",
+    )
+
+    assert report["mean_v1_score"] == pytest.approx(0.6)
+    assert report["band_transitions"]["Hard"]["Easy"] == 1
+    assert report["band_transitions"]["Easy"]["Hard"] == 1

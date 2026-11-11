@@ -4,7 +4,8 @@
     "anomalies": 2,
     "scored": 38,
     "unscored": 0,
-    "semantic_available": 38
+    "semantic_available": 38,
+    "semantic_embeddings": 38
   },
   "difficulty_bands": {
     "Hard": 13,
@@ -166,7 +167,7 @@
     "requested_device": "cuda",
     "device": "cuda",
     "model_name": "validation/.work/clip_model",
-    "batch_size": 8,
+    "batch_size": 32,
     "model_loaded": true,
     "cache_enabled": true,
     "eligible_sample_count": 38,
@@ -175,33 +176,35 @@
     "failure_count": 0,
     "failure_sample_ids": [],
     "failure_errors": [],
-    "extract_seconds": 0.5404766999999993,
-    "metrics_seconds": 0.011108400000011898,
-    "semantic_seconds": 47.377868800000215,
-    "gpu_peak_allocated_mb": 611.6103515625,
-    "gpu_peak_reserved_mb": 656.0
+    "extract_seconds": 0.662189099999523,
+    "prepare_seconds": 49.68614570000045,
+    "metrics_seconds": 0.009544399999867892,
+    "semantic_seconds": 50.367111999999906,
+    "gpu_peak_allocated_mb": 679.3916015625,
+    "gpu_peak_reserved_mb": 780.0
   },
   "performance": {
-    "load_seconds": 0.2568047000004299,
-    "quality_seconds": 0.06163670000023558,
-    "anomaly_seconds": 0.006283699999585224,
-    "semantic_seconds": 47.37910289999945,
-    "scoring_seconds": 0.049412000000302214,
-    "split_seconds": 0.04515050000009069,
-    "analysis_seconds": 47.803498899999795,
-    "report_seconds": 1.2533223000000362,
-    "total_seconds": 49.05682119999983
+    "load_seconds": 0.28225669999937963,
+    "quality_seconds": 0.07742700000017066,
+    "anomaly_seconds": 0.006718599999658181,
+    "semantic_seconds": 50.36811690000013,
+    "scoring_seconds": 0.0511847999996462,
+    "split_seconds": 0.050687099999777274,
+    "analysis_seconds": 50.84074809999947,
+    "report_seconds": 1.597877399999561,
+    "total_seconds": 52.438625499999034
   },
   "configuration": {
     "project": {
       "seed": 42,
-      "version": "0.1.0"
+      "version": "0.2.0"
     },
     "data": {
       "format": "csv",
       "path_column": "path",
       "label_column": "label",
       "group_column": "group_id",
+      "group_column_required": false,
       "extensions": [
         ".jpg",
         ".jpeg",
@@ -241,13 +244,13 @@
       "clip": {
         "model_name": "validation/.work/clip_model",
         "device": "cuda",
-        "batch_size": 8,
+        "batch_size": 32,
         "allow_download": true,
         "augmentations": 1
       },
       "cache": {
         "enabled": true,
-        "directory": ".work/clip_gpu_cache"
+        "directory": ".work/clip_gpu_cache_v2"
       }
     },
     "difficulty": {
@@ -295,13 +298,13 @@
       "preview_count": 12,
       "preview_columns": 4,
       "image_thumbnail_size": 180,
-      "title": "CIFAR-10 CLIP GPU Validation"
+      "title": "CIFAR-10 CLIP GPU Batch-32 Validation"
     }
   },
   "warnings": [
     "Actual train ratio 0.789 differs from requested 0.700 by more than 0.05."
   ],
-  "generated_at_utc": "2026-11-11T11:29:16.813217+00:00",
+  "generated_at_utc": "2026-11-11T12:02:19.631263+00:00",
   "input_root": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test",
   "label_file": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\clip_small_labels.csv",
   "output_directory": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\real_clip_gpu",

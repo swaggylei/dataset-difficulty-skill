@@ -71,6 +71,8 @@ The top-level list keys `items`, `data`, and `samples` are accepted.
 
 - `format`: `auto`, `folder`, `csv`, or `json`.
 - `path_column`, `label_column`, `group_column`: CSV/JSON column names.
+- `group_column_required`: fail instead of falling back to sample-level
+  splitting when the requested group column is missing or entirely empty.
 - `extensions`: image suffixes scanned in folder mode.
 - `ignore_dirs`: directory names below the dataset root to exclude.
 

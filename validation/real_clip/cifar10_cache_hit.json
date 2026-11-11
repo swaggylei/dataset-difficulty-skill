@@ -4,7 +4,8 @@
     "anomalies": 794,
     "scored": 9206,
     "unscored": 0,
-    "semantic_available": 9206
+    "semantic_available": 9206,
+    "semantic_embeddings": 9206
   },
   "difficulty_bands": {
     "Medium": 3130,
@@ -207,33 +208,35 @@
     "failure_count": 0,
     "failure_sample_ids": [],
     "failure_errors": [],
-    "extract_seconds": 9.990023700000165,
-    "metrics_seconds": 0.5391237000003457,
-    "semantic_seconds": 94.21747090000008,
+    "extract_seconds": 9.396098399998664,
+    "prepare_seconds": 0.0,
+    "metrics_seconds": 0.45415089999914926,
+    "semantic_seconds": 94.31453309999961,
     "gpu_peak_allocated_mb": null,
     "gpu_peak_reserved_mb": null
   },
   "performance": {
-    "load_seconds": 63.34749059999922,
-    "quality_seconds": 17.995660199999293,
-    "anomaly_seconds": 0.7870206999996299,
-    "semantic_seconds": 94.22242229999938,
-    "scoring_seconds": 1.6280833000000712,
-    "split_seconds": 6.985768200000166,
-    "analysis_seconds": 184.97203649999938,
-    "report_seconds": 2.4255064999997558,
-    "total_seconds": 187.39754299999913
+    "load_seconds": 65.20704269999987,
+    "quality_seconds": 18.316124400000263,
+    "anomaly_seconds": 0.7998800999994273,
+    "semantic_seconds": 94.31798119999985,
+    "scoring_seconds": 1.7436945999997988,
+    "split_seconds": 6.787642599998435,
+    "analysis_seconds": 187.17819650000092,
+    "report_seconds": 2.419213799999852,
+    "total_seconds": 189.59741030000077
   },
   "configuration": {
     "project": {
       "seed": 42,
-      "version": "0.1.0"
+      "version": "0.2.0"
     },
     "data": {
       "format": "csv",
       "path_column": "path",
       "label_column": "label",
       "group_column": "group_id",
+      "group_column_required": false,
       "extensions": [
         ".jpg",
         ".jpeg",
@@ -279,7 +282,7 @@
       },
       "cache": {
         "enabled": true,
-        "directory": ".work/clip_cifar_cache"
+        "directory": ".work/clip_cifar_cache_v2"
       }
     },
     "difficulty": {
@@ -331,10 +334,10 @@
     }
   },
   "warnings": [],
-  "generated_at_utc": "2026-11-11T11:40:54.598558+00:00",
+  "generated_at_utc": "2026-11-11T12:14:14.920277+00:00",
   "input_root": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test",
   "label_file": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test\\labels.csv",
-  "output_directory": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\cifar10_test_cache_hit",
+  "output_directory": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\cifar10_cache_check",
   "artifacts": [
     "samples.csv",
     "summary.json",

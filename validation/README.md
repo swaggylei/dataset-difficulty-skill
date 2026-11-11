@@ -39,9 +39,9 @@ blur/scale ambiguity, and class-boundary cases. The top examples are
 aviation/deer/bird/dog images with low visual accessibility and elevated
 semantic geometry.
 
-No CLIP extraction failed. The complete first run took 290.1 seconds; semantic
-extraction was 89.7 seconds and CUDA peak memory was 773.5 MiB allocated /
-898 MiB reserved.
+No CLIP extraction failed. The complete first run took 304.8 seconds; model
+preparation was 50.4 seconds, embedding extraction was 95.1 seconds, and CUDA
+peak memory was 773.5 MiB allocated / 914 MiB reserved.
 
 ## Reproduction Notes
 

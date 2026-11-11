@@ -4,7 +4,8 @@
     "anomalies": 794,
     "scored": 9206,
     "unscored": 0,
-    "semantic_available": 9206
+    "semantic_available": 9206,
+    "semantic_embeddings": 9206
   },
   "difficulty_bands": {
     "Medium": 3130,
@@ -207,33 +208,35 @@
     "failure_count": 0,
     "failure_sample_ids": [],
     "failure_errors": [],
-    "extract_seconds": 89.70302660000016,
-    "metrics_seconds": 0.46776950000003126,
-    "semantic_seconds": 139.17302990000007,
+    "extract_seconds": 95.08439120000003,
+    "prepare_seconds": 50.427022800000486,
+    "metrics_seconds": 0.480442199999743,
+    "semantic_seconds": 146.04038149999906,
     "gpu_peak_allocated_mb": 773.4541015625,
-    "gpu_peak_reserved_mb": 898.0
+    "gpu_peak_reserved_mb": 914.0
   },
   "performance": {
-    "load_seconds": 64.22784570000022,
-    "quality_seconds": 74.68266419999964,
-    "anomaly_seconds": 0.744197200000599,
-    "semantic_seconds": 139.17793900000015,
-    "scoring_seconds": 1.6721956000001228,
-    "split_seconds": 7.013952399999653,
-    "analysis_seconds": 287.5245554000003,
-    "report_seconds": 2.5933108999997785,
-    "total_seconds": 290.11786630000006
+    "load_seconds": 67.16352670000015,
+    "quality_seconds": 78.79346860000078,
+    "anomaly_seconds": 0.7631395999997039,
+    "semantic_seconds": 146.04773150000074,
+    "scoring_seconds": 1.8181963999995787,
+    "split_seconds": 7.470240000000558,
+    "analysis_seconds": 302.06207130000075,
+    "report_seconds": 2.754959100000633,
+    "total_seconds": 304.8170304000014
   },
   "configuration": {
     "project": {
       "seed": 42,
-      "version": "0.1.0"
+      "version": "0.2.0"
     },
     "data": {
       "format": "csv",
       "path_column": "path",
       "label_column": "label",
       "group_column": "group_id",
+      "group_column_required": false,
       "extensions": [
         ".jpg",
         ".jpeg",
@@ -279,7 +282,7 @@
       },
       "cache": {
         "enabled": true,
-        "directory": ".work/clip_cifar_cache"
+        "directory": ".work/clip_cifar_cache_v2"
       }
     },
     "difficulty": {
@@ -331,7 +334,7 @@
     }
   },
   "warnings": [],
-  "generated_at_utc": "2026-11-11T11:37:28.982966+00:00",
+  "generated_at_utc": "2026-11-11T12:10:44.560394+00:00",
   "input_root": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test",
   "label_file": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test\\labels.csv",
   "output_directory": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\cifar10_test",

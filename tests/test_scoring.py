@@ -61,6 +61,8 @@ def test_scoring_preserves_components_and_isolates_anomalies() -> None:
     assert result.loc[5, "sample_status"] == "Anomaly"
     assert result.loc[5, "difficulty_band"] == "Anomaly"
     assert np.isnan(result.loc[5, "difficulty_score"])
+    assert result.loc[5, "label_rarity_weight"] == 0.0
+    assert result.loc[5, "label_rarity_contribution"] == 0.0
     assert result.loc[0, "component_coverage"] == pytest.approx(1.0)
     assert result.loc[4, "component_coverage"] < 1.0
     assert result.loc[4, "difficulty_score"] >= 0.0

@@ -28,7 +28,7 @@ $env:PYTHONPATH='E:\大学\AIGC\AGIQA-1K\.venv-baselines2\Lib\site-packages'
 Result:
 
 ```text
-62 passed in 20.76s
+66 passed in 26.46s
 ```
 
 Coverage includes:
@@ -49,6 +49,8 @@ Coverage includes:
 - empty datasets, JSON null sanitization, HTML/CSV/PNG reports;
 - CLI subprocess execution, group-column input, config-driven semantic backend
   selection, transformer output compatibility, and PyTorch checkpoint loading;
+- missing explicit group-column failure, prepare-only semantic preflight,
+  usable-semantic availability, and explicit before-CSV comparison;
 - CIFAR-10 Parquet export and V1/V2 metric comparison utilities.
 
 ## Skill Validation
@@ -97,13 +99,13 @@ Real validation used `openai/clip-vit-base-patch32`, 40 CIFAR-10 images for
 CPU/GPU checks, and the complete 10,000-image CIFAR-10 test split.
 
 ```text
-CPU first run: 50.13 s; 38 real embeddings; 0 failures
+CPU first run: 62.75 s; 38 real embeddings; 0 failures
 CPU cache hit: 38 hits; 0 misses; model not reloaded
-GPU first run: 49.06 s; peak VRAM 611.61 MiB allocated / 656 MiB reserved
+GPU batch-32 first run: 52.44 s; peak VRAM 679.39 MiB allocated / 780 MiB reserved
 GPU cache hit: 38 hits; 0 misses; model not reloaded
 Partial-cache resume: 10 hits, 28 misses, 0 failures
 CIFAR-10 full run: 10,000 images, 9,206 scored, 794 anomalies, 0 CLIP failures
-CIFAR-10 full run: 290.12 s total; peak VRAM 773.45 MiB allocated / 898 MiB reserved
+CIFAR-10 full run: 304.82 s total; peak VRAM 773.45 MiB allocated / 914 MiB reserved
 CIFAR-10 full-cache rerun: 9,206 hits, 0 misses, model not reloaded
 ```
 

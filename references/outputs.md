@@ -11,7 +11,9 @@ One row per unique image path. Important groups:
 - quality: blur, brightness, contrast, spectral entropy, high-frequency
   ratio, image entropy, dimensions, hashes, quality flags;
 - semantic: availability, centroid distance, confusion risk, cross-class
-  margin, augmentation stability/instability, and raw component ranks;
+  margin, augmentation stability/instability, raw component ranks,
+  `semantic_embedding_available`, `semantic_available`, and per-component
+  availability flags;
 - scoring: visual accessibility, descriptive visual complexity, configured
   and effective weights, contributions, `difficulty_scope`, coverage,
   difficulty score, band, and sample status;

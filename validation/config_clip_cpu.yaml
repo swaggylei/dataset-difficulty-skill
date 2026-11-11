@@ -15,7 +15,7 @@ semantic:
     augmentations: 1
   cache:
     enabled: true
-    directory: .work/clip_cpu_cache
+    directory: .work/clip_cpu_cache_v2
 report:
   preview_count: 12
   title: "CIFAR-10 CLIP CPU Validation"

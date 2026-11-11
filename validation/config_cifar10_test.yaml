@@ -15,7 +15,7 @@ semantic:
     augmentations: 1
   cache:
     enabled: true
-    directory: .work/clip_cifar_cache
+    directory: .work/clip_cifar_cache_v2
 split:
   ratios:
     train: 0.70
