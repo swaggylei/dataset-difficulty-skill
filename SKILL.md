@@ -31,9 +31,11 @@ fine-tuning a classifier.
 1. Confirm the dataset directory exists.
 2. Determine format: folder-per-class, CSV, or JSON.
 3. For CSV/JSON, confirm the label file and relevant path/label columns.
-4. Select an output directory that may be written.
-5. Never modify or delete original images or labels.
-6. Do not download CLIP weights unless the user explicitly authorizes it.
+4. If leakage-safe grouping is required, confirm the optional `group_id`
+   column name.
+5. Select an output directory outside the dataset tree.
+6. Never modify or delete original images or labels.
+7. Do not download CLIP weights unless the user explicitly authorizes it.
 
 Supported folder layout:
 
@@ -67,6 +69,16 @@ python scripts/analyze_dataset.py DATA_ROOT \
   --output OUTPUT_DIR
 ```
 
+With leakage-safe groups:
+
+```bash
+python scripts/analyze_dataset.py DATA_ROOT \
+  --labels labels.csv \
+  --format csv \
+  --group-column group_id \
+  --output OUTPUT_DIR
+```
+
 Offline analysis without CLIP:
 
 ```bash
@@ -94,7 +106,8 @@ Run `python scripts/analyze_dataset.py --help` for all overrides.
    data-integrity findings.
 3. Review duplicate groups and near duplicates.
 4. Review quality outliers separately from difficulty.
-5. Compare raw semantic components and their availability.
+5. Compare visual accessibility, descriptive visual complexity, raw semantic
+   components, weights, and contribution values.
 6. Interpret Easy/Medium/Hard only among non-anomalous scored samples.
 7. Check split diagnostics and warnings before using the manifest.
 
@@ -106,6 +119,16 @@ sample has low accuracy."
 If semantic fields are null, state that CLIP was unavailable or disabled.
 Do not infer or invent embeddings. Do not treat poor quality as semantic
 difficulty. Do not merge anomaly labels into Easy/Medium/Hard.
+
+Label rarity is an independent dataset statistic with zero weight and zero
+contribution. Image entropy and frequency complexity are descriptive visual
+complexity, not evidence that a sample is harder. When
+`difficulty_scope=visual_only`, explicitly warn that the prior lacks CLIP
+semantic evidence.
+
+Read `summary.json["semantic_runtime"]` and `summary.json["performance"]`
+for actual device, batch size, cache hits/misses, failures, stage timings, and
+CUDA peak memory. Do not report those fields unless they came from a real run.
 
 Read:
 

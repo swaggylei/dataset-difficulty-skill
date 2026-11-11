@@ -14,6 +14,7 @@ from dataset_difficulty.features import (
     ClipFeatureExtractor,
     FeatureCache,
     NullFeatureCache,
+    clip_checkpoint_kwargs,
     extract_features,
 )
 
@@ -219,3 +220,27 @@ def test_clip_runtime_info_is_explicit_before_model_load(tmp_path: Path) -> None
     assert info["model_loaded"] is False
     assert info["batch_size"] == 8
     assert info["gpu_peak_allocated_mb"] is None
+
+
+def test_clip_checkpoint_kwargs_support_pytorch_bin_local_model(
+    tmp_path: Path,
+) -> None:
+    (tmp_path / "config.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "pytorch_model.bin").write_bytes(b"placeholder")
+
+    kwargs = clip_checkpoint_kwargs(str(tmp_path))
+
+    assert kwargs["use_safetensors"] is False
+
+
+def test_clip_feature_tensor_accepts_transformers_output_objects() -> None:
+    from types import SimpleNamespace
+
+    import torch
+
+    from dataset_difficulty.features import clip_feature_tensor
+
+    expected = torch.arange(6, dtype=torch.float32).reshape(2, 3)
+    assert clip_feature_tensor(expected) is expected
+    assert clip_feature_tensor(SimpleNamespace(pooler_output=expected)) is expected
+    assert clip_feature_tensor(SimpleNamespace(image_embeds=expected)) is expected

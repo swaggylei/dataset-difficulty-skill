@@ -16,17 +16,18 @@
 Absolute thresholds produce `quality_issue_flags`. A quality issue is an
 integrity review signal, not proof of semantic difficulty.
 
-## Dataset-Relative Visual Component
+## Visual Accessibility vs Descriptive Complexity
 
-The visual difficulty component uses percentile ranks:
+`visual_accessibility_risk` uses percentile ranks:
 
 - lower blur value -> higher blur-risk component;
 - brightness farther from 0.5 -> higher risk;
-- lower contrast -> higher risk;
-- higher spectral/high-frequency complexity -> higher component;
-- higher image entropy -> higher component.
+- lower contrast -> higher risk.
 
-The configured visual weights are applied only to available metrics.
+`visual_complexity_score` separately summarizes percentile ranks of image
+entropy, spectral entropy, and high-frequency energy. It is descriptive only:
+higher values are not assumed to imply higher task difficulty and have no
+weight in the composite score.
 
 ## Label Accessibility
 
@@ -35,6 +36,10 @@ labels. It measures relative underrepresentation in this dataset.
 
 Empty and conflicting labels are anomalies. They are not treated as ordinary
 rare classes.
+
+`label_rarity_weight=0`, `label_rarity_contribution=0`, and
+`label_rarity_in_difficulty=False`. Label rarity does not alter
+`difficulty_score`.
 
 ## CLIP Semantic Metrics
 
@@ -57,12 +62,16 @@ is not used because CLIP dimensions do not form a probability distribution.
 
 Available components:
 
-- visual difficulty;
+- visual accessibility risk;
 - semantic complexity;
-- label rarity.
 
-The configured weights are normalized over available components. The original
-component values and `component_coverage` remain in `samples.csv`. Anomalies
+Configured (`difficulty_*_weight`), effective normalized
+(`difficulty_*_effective_weight`), and contribution
+(`visual_contribution`, `semantic_contribution`) values remain in
+`samples.csv`. Contributions sum to `difficulty_score` for scored samples.
+
+`difficulty_scope` is `visual_semantic`, `visual_only`, or `anomaly`. A
+visual-only score is not a complete semantic difficulty assessment. Anomalies
 receive a null `difficulty_score` and `difficulty_band=Anomaly`.
 
 Default bands use the 33rd and 67th percentiles of scored samples:
@@ -88,6 +97,6 @@ Statistical outliers use per-label median/MAD robust z-scores.
 - CLIP geometry is model-dependent.
 - Dataset-relative ranks should not be compared across unrelated datasets.
 - Severe class imbalance and tiny strata can make split ratios approximate.
-- Image quality and semantic difficulty are correlated in some datasets but
+- Image quality, visual complexity, and semantic difficulty are distinct and
   are not interchangeable.
 - No metric in this Skill is a calibrated accuracy prediction.

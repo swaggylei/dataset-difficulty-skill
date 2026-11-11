@@ -1,0 +1,324 @@
+{
+  "counts": {
+    "total": 40,
+    "anomalies": 2,
+    "scored": 38,
+    "unscored": 0,
+    "semantic_available": 38
+  },
+  "difficulty_bands": {
+    "Hard": 13,
+    "Easy": 13,
+    "Medium": 12,
+    "Anomaly": 2
+  },
+  "splits": {
+    "train": 30,
+    "val": 4,
+    "test": 4,
+    "excluded_anomaly": 2
+  },
+  "classes": {
+    "airplane": 4,
+    "automobile": 4,
+    "bird": 4,
+    "cat": 4,
+    "deer": 4,
+    "dog": 4,
+    "frog": 4,
+    "horse": 4,
+    "ship": 4,
+    "truck": 4
+  },
+  "anomaly_reasons": {
+    "quality_outlier": 2
+  },
+  "mean_component_coverage": 0.95,
+  "split_diagnostics": {
+    "ratios": {
+      "train": 0.7,
+      "val": 0.15,
+      "test": 0.15
+    },
+    "seed": 42,
+    "exclude_anomalies": true,
+    "split_mode": "group",
+    "group_count": 38,
+    "split_unit_count": 38,
+    "counts": {
+      "excluded_anomaly": 2,
+      "test": 4,
+      "train": 30,
+      "val": 4
+    },
+    "actual_scored_ratios": {
+      "train": 0.7894736842105263,
+      "val": 0.10526315789473684,
+      "test": 0.10526315789473684
+    },
+    "class_distribution": {
+      "train": {
+        "dog": 4,
+        "frog": 4,
+        "airplane": 3,
+        "bird": 3,
+        "cat": 3,
+        "horse": 3,
+        "ship": 3,
+        "truck": 3,
+        "automobile": 2,
+        "deer": 2
+      },
+      "val": {
+        "airplane": 1,
+        "automobile": 1,
+        "bird": 1,
+        "horse": 1
+      },
+      "test": {
+        "automobile": 1,
+        "cat": 1,
+        "deer": 1,
+        "truck": 1
+      },
+      "excluded_anomaly": {
+        "deer": 1,
+        "ship": 1
+      }
+    },
+    "difficulty_distribution": {
+      "train": {
+        "Easy": 11,
+        "Medium": 10,
+        "Hard": 9
+      },
+      "val": {
+        "Hard": 3,
+        "Easy": 1
+      },
+      "test": {
+        "Medium": 2,
+        "Hard": 1,
+        "Easy": 1
+      },
+      "excluded_anomaly": {
+        "Anomaly": 2
+      }
+    },
+    "groups_spanning_splits": 0,
+    "duplicate_groups_spanning_splits": 0,
+    "leakage_risk": {
+      "level": "low",
+      "groups_spanning_splits": 0,
+      "duplicate_groups_spanning_splits": 0,
+      "messages": [
+        "No group_id or duplicate-group leakage detected."
+      ]
+    },
+    "excluded_anomalies": 2,
+    "strata": [
+      {
+        "split": "train",
+        "class_counts": {
+          "dog": 4,
+          "frog": 4,
+          "airplane": 3,
+          "bird": 3,
+          "cat": 3,
+          "horse": 3,
+          "ship": 3,
+          "truck": 3,
+          "automobile": 2,
+          "deer": 2
+        }
+      },
+      {
+        "split": "val",
+        "class_counts": {
+          "airplane": 1,
+          "automobile": 1,
+          "bird": 1,
+          "horse": 1
+        }
+      },
+      {
+        "split": "test",
+        "class_counts": {
+          "automobile": 1,
+          "cat": 1,
+          "deer": 1,
+          "truck": 1
+        }
+      }
+    ],
+    "warnings": [
+      "Actual train ratio 0.789 differs from requested 0.700 by more than 0.05."
+    ]
+  },
+  "semantic_backend": "ClipFeatureExtractor",
+  "difficulty_scope": "visual_semantic",
+  "difficulty_scopes": {
+    "visual_semantic": 38
+  },
+  "score_interpretation": "Composite prior uses visual accessibility and CLIP semantic components.",
+  "semantic_runtime": {
+    "backend": "ClipFeatureExtractor",
+    "requested_device": "cuda",
+    "device": "cuda",
+    "model_name": "validation/.work/clip_model",
+    "batch_size": 8,
+    "model_loaded": true,
+    "cache_enabled": true,
+    "eligible_sample_count": 38,
+    "cache_hits": 0,
+    "cache_misses": 38,
+    "failure_count": 0,
+    "failure_sample_ids": [],
+    "failure_errors": [],
+    "extract_seconds": 0.5404766999999993,
+    "metrics_seconds": 0.011108400000011898,
+    "semantic_seconds": 47.377868800000215,
+    "gpu_peak_allocated_mb": 611.6103515625,
+    "gpu_peak_reserved_mb": 656.0
+  },
+  "performance": {
+    "load_seconds": 0.2568047000004299,
+    "quality_seconds": 0.06163670000023558,
+    "anomaly_seconds": 0.006283699999585224,
+    "semantic_seconds": 47.37910289999945,
+    "scoring_seconds": 0.049412000000302214,
+    "split_seconds": 0.04515050000009069,
+    "analysis_seconds": 47.803498899999795,
+    "report_seconds": 1.2533223000000362,
+    "total_seconds": 49.05682119999983
+  },
+  "configuration": {
+    "project": {
+      "seed": 42,
+      "version": "0.1.0"
+    },
+    "data": {
+      "format": "csv",
+      "path_column": "path",
+      "label_column": "label",
+      "group_column": "group_id",
+      "extensions": [
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".bmp",
+        ".tif",
+        ".tiff",
+        ".webp"
+      ],
+      "ignore_dirs": [
+        ".git",
+        ".dataset_difficulty_cache"
+      ]
+    },
+    "quality": {
+      "blur_laplacian_min": 35.0,
+      "brightness_min": 0.12,
+      "brightness_max": 0.88,
+      "contrast_min": 0.08,
+      "image_entropy_min": 2.0,
+      "spectral_entropy_min": 0.35
+    },
+    "anomaly": {
+      "min_image_size": 32,
+      "robust_z_threshold": 3.5,
+      "robust_min_group_size": 8,
+      "near_duplicate": {
+        "enabled": false,
+        "hamming_threshold": 6,
+        "max_samples": 5000
+      }
+    },
+    "semantic": {
+      "enabled": true,
+      "backend": "clip",
+      "min_class_samples": 2,
+      "clip": {
+        "model_name": "validation/.work/clip_model",
+        "device": "cuda",
+        "batch_size": 8,
+        "allow_download": true,
+        "augmentations": 1
+      },
+      "cache": {
+        "enabled": true,
+        "directory": ".work/clip_gpu_cache"
+      }
+    },
+    "difficulty": {
+      "weights": {
+        "visual": 0.3,
+        "semantic": 0.7
+      },
+      "visual_weights": {
+        "blur": 0.5,
+        "brightness": 0.2,
+        "contrast": 0.3
+      },
+      "visual_complexity_weights": {
+        "image_entropy": 0.34,
+        "spectral_entropy": 0.33,
+        "high_frequency": 0.33
+      },
+      "semantic_weights": {
+        "outlier": 0.4,
+        "confusion": 0.4,
+        "instability": 0.2
+      },
+      "bands": {
+        "quantiles": [
+          0.33,
+          0.67
+        ],
+        "labels": [
+          "Easy",
+          "Medium",
+          "Hard"
+        ]
+      }
+    },
+    "split": {
+      "ratios": {
+        "train": 0.7,
+        "val": 0.15,
+        "test": 0.15
+      },
+      "exclude_anomalies": true,
+      "ensure_val_test_when_possible": true
+    },
+    "report": {
+      "preview_count": 12,
+      "preview_columns": 4,
+      "image_thumbnail_size": 180,
+      "title": "CIFAR-10 CLIP GPU Validation"
+    }
+  },
+  "warnings": [
+    "Actual train ratio 0.789 differs from requested 0.700 by more than 0.05."
+  ],
+  "generated_at_utc": "2026-11-11T11:29:16.813217+00:00",
+  "input_root": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test",
+  "label_file": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\clip_small_labels.csv",
+  "output_directory": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\real_clip_gpu",
+  "artifacts": [
+    "samples.csv",
+    "summary.json",
+    "report.html",
+    "hard_samples.png",
+    "anomaly_samples.png",
+    "split_manifest.csv",
+    "split_summary.json"
+  ],
+  "limitations": [
+    "Difficulty scores are dataset-relative priors, not predicted accuracy.",
+    "Quality issues and visual complexity are not equivalent to task difficulty.",
+    "Label rarity is an independent dataset statistic and contributes zero.",
+    "Visual-only scores do not represent complete semantic difficulty.",
+    "Unavailable metrics remain null and are excluded from weighted scores."
+  ]
+}

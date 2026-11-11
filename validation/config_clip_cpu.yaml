@@ -1,0 +1,21 @@
+data:
+  format: csv
+anomaly:
+  min_image_size: 32
+  near_duplicate:
+    enabled: false
+semantic:
+  backend: clip
+  min_class_samples: 2
+  clip:
+    model_name: openai/clip-vit-base-patch32
+    device: cpu
+    batch_size: 8
+    allow_download: true
+    augmentations: 1
+  cache:
+    enabled: true
+    directory: .work/clip_cpu_cache
+report:
+  preview_count: 12
+  title: "CIFAR-10 CLIP CPU Validation"

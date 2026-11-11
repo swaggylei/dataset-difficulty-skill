@@ -48,6 +48,22 @@ def _bands(scores: pd.Series) -> pd.Series:
     return result
 
 
+def _spearman_correlation(first: pd.Series, second: pd.Series) -> float:
+    aligned = pd.concat([first, second], axis=1).dropna()
+    if len(aligned) < 2:
+        return float("nan")
+    first_rank = aligned.iloc[:, 0].rank().to_numpy(dtype=float)
+    second_rank = aligned.iloc[:, 1].rank().to_numpy(dtype=float)
+    first_centered = first_rank - first_rank.mean()
+    second_centered = second_rank - second_rank.mean()
+    denominator = np.sqrt(
+        np.sum(first_centered**2) * np.sum(second_centered**2)
+    )
+    if denominator <= np.finfo(float).eps:
+        return float("nan")
+    return float(np.sum(first_centered * second_centered) / denominator)
+
+
 def recompute_v1(after: pd.DataFrame) -> pd.DataFrame:
     frame = after[after["sample_status"].eq("Scored")].copy()
     frame["v1_blur"] = _inverse_percentile(frame["blur_laplacian_var"])
@@ -165,10 +181,9 @@ def compare_analysis_frames(
             .fillna(0)
             .mean()
         ),
-        "spearman_rank_correlation": float(
-            merged["v1_difficulty_score"].corr(
-                pd.to_numeric(merged["difficulty_score"]), method="spearman"
-            )
+        "spearman_rank_correlation": _spearman_correlation(
+            merged["v1_difficulty_score"],
+            pd.to_numeric(merged["difficulty_score"]),
         ),
         "changed_band_count": int(
             (

@@ -70,7 +70,7 @@ The top-level list keys `items`, `data`, and `samples` are accepted.
 ### `data`
 
 - `format`: `auto`, `folder`, `csv`, or `json`.
-- `path_column`, `label_column`: CSV/JSON column names.
+- `path_column`, `label_column`, `group_column`: CSV/JSON column names.
 - `extensions`: image suffixes scanned in folder mode.
 - `ignore_dirs`: directory names below the dataset root to exclude.
 
@@ -109,8 +109,11 @@ These absolute thresholds produce `quality_issue_flags`.
 
 ### `difficulty`
 
-- `weights.visual`, `weights.semantic`, `weights.label`: top-level weights.
-- `visual_weights.blur`, `brightness`, `contrast`, `frequency`, `entropy`.
+- `weights.visual`, `weights.semantic`: composite weights. `weights.label` is
+  ignored and Label Rarity always has zero contribution.
+- `visual_weights.blur`, `brightness`, `contrast`: visual accessibility.
+- `visual_complexity_weights.image_entropy`, `spectral_entropy`,
+  `high_frequency`: descriptive complexity only.
 - `semantic_weights.outlier`, `confusion`, `instability`.
 - `bands.quantiles`: two ascending quantiles.
 - `bands.labels`: Easy, Medium, Hard names.
@@ -121,6 +124,7 @@ These absolute thresholds produce `quality_issue_flags`.
 - `exclude_anomalies`: default true.
 - `ensure_val_test_when_possible`: assigns Val and Test to strata of size at
   least three.
+- Non-empty `group_id` values switch to whole-group allocation automatically.
 
 ### `report`
 
@@ -136,6 +140,7 @@ These absolute thresholds produce `quality_issue_flags`.
 --format auto|folder|csv|json
 --path-column NAME
 --label-column NAME
+--group-column NAME
 --semantic-backend auto|clip|disabled
 --no-semantic
 --clip-model MODEL_OR_PATH

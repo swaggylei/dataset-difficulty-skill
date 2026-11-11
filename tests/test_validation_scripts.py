@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import json
+from io import BytesIO
 import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from PIL import Image
 
 
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
@@ -42,6 +44,7 @@ def test_prepare_cifar_exports_balanced_images_and_labels(tmp_path: Path) -> Non
     }
     assert labels["group_id"].is_unique
     assert dataset["exported_count"] == 4
+    assert dataset["class_counts"] == {"airplane": 2, "automobile": 2}
     assert len(list((output / "images").rglob("*.png"))) == 4
     assert json.loads((output / "dataset_meta.json").read_text())["split"] == "test"
 
@@ -84,3 +87,34 @@ def test_compare_v1_v2_recomputes_scores_and_band_transitions(
     assert "band_transitions" in report
     assert (output / "comparison.json").exists()
     assert (output / "comparison.md").exists()
+
+
+def test_prepare_cifar_exports_huggingface_parquet(tmp_path: Path) -> None:
+    from prepare_cifar10 import export_cifar_parquet
+
+    records = []
+    for index, label in enumerate((0, 0, 1, 1)):
+        image = Image.fromarray(
+            np.full((8, 8, 3), 20 + index * 10, dtype=np.uint8)
+        )
+        buffer = BytesIO()
+        image.save(buffer, format="PNG")
+        records.append({"img": {"bytes": buffer.getvalue()}, "label": label})
+    parquet = tmp_path / "cifar.parquet"
+    pd.DataFrame(records).to_parquet(parquet)
+    output = tmp_path / "exported"
+
+    metadata = export_cifar_parquet(
+        parquet_path=parquet,
+        output=output,
+        class_names=["airplane", "automobile"],
+        split="test",
+        limit=4,
+    )
+
+    assert metadata["exported_count"] == 4
+    labels = pd.read_csv(output / "labels.csv")
+    assert labels["label"].value_counts().to_dict() == {
+        "airplane": 2,
+        "automobile": 2,
+    }

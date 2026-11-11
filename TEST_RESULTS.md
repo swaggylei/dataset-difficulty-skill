@@ -28,7 +28,7 @@ $env:PYTHONPATH='E:\大学\AIGC\AGIQA-1K\.venv-baselines2\Lib\site-packages'
 Result:
 
 ```text
-47 passed in 10.54s
+62 passed in 20.76s
 ```
 
 Coverage includes:
@@ -42,9 +42,14 @@ Coverage includes:
 - CLIP-shaped normalized embeddings, centroid distance, class confusion,
   augmentation instability, and missing semantic values;
 - anomaly-isolated difficulty scoring and quantile bands;
-- reproducible class-and-difficulty joint splits and tiny strata;
+- zero Label Rarity contribution, explicit component weights/contributions,
+  visual-only scope, and descriptive-only entropy/frequency complexity;
+- reproducible class-and-difficulty joint splits, whole-group `group_id`
+  splitting, leakage diagnostics, and tiny strata;
 - empty datasets, JSON null sanitization, HTML/CSV/PNG reports;
-- CLI subprocess execution and config-driven semantic backend selection.
+- CLI subprocess execution, group-column input, config-driven semantic backend
+  selection, transformer output compatibility, and PyTorch checkpoint loading;
+- CIFAR-10 Parquet export and V1/V2 metric comparison utilities.
 
 ## Skill Validation
 
@@ -86,6 +91,28 @@ The example output includes all required CSV, JSON, HTML, split, and preview
 artifacts. The preview images were visually inspected for readable captions
 and non-overlapping text.
 
+## Real CLIP and CIFAR-10 Validation
+
+Real validation used `openai/clip-vit-base-patch32`, 40 CIFAR-10 images for
+CPU/GPU checks, and the complete 10,000-image CIFAR-10 test split.
+
+```text
+CPU first run: 50.13 s; 38 real embeddings; 0 failures
+CPU cache hit: 38 hits; 0 misses; model not reloaded
+GPU first run: 49.06 s; peak VRAM 611.61 MiB allocated / 656 MiB reserved
+GPU cache hit: 38 hits; 0 misses; model not reloaded
+Partial-cache resume: 10 hits, 28 misses, 0 failures
+CIFAR-10 full run: 10,000 images, 9,206 scored, 794 anomalies, 0 CLIP failures
+CIFAR-10 full run: 290.12 s total; peak VRAM 773.45 MiB allocated / 898 MiB reserved
+CIFAR-10 full-cache rerun: 9,206 hits, 0 misses, model not reloaded
+```
+
+Records and required artifacts:
+
+- `validation/real_clip/`
+- `validation/cifar10_test/`
+- `validation/before_after.md`
+
 ## Packaging
 
 `setuptools.build_meta.build_wheel` parsed `pyproject.toml`, built the package
@@ -97,9 +124,13 @@ package configuration error.
 
 ## Known Environment Limits
 
-- A CLIP model was not downloaded or executed. The real Transformers
-  `CLIPImageProcessor` and `CLIPModel` APIs were import-checked; semantic math
-  and feature caching were tested with deterministic injected extractors.
+- The real model run used Transformers `5.20.1`, PyTorch `2.14.1+cu130`, CUDA
+  on one RTX 3060 Laptop GPU, and Python 3.12.4.
+- CPU and GPU first-run totals include model/device initialization; extraction
+  seconds are recorded separately.
+- CIFAR-10 images are 32x32; validation set `anomaly.min_image_size=32`.
+- Near-duplicate detection was disabled for the 10,000-image validation run
+  to avoid quadratic comparison. This is recorded in the config.
 - Python 3.11 was unavailable; runtime verification used Python 3.12.7.
 - Residual `.pytest_tmp`, `.wheel_tmp`, and `.wheelhouse` sandbox-temporary
   subdirectories have ACL-denied child files and are ignored by `.gitignore`;

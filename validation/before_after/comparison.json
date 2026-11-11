@@ -1,0 +1,32 @@
+{
+  "common_scored_samples": 9206,
+  "mean_v1_score": 0.4092242771727323,
+  "mean_v2_score": 0.5000282424505758,
+  "median_v1_score": 0.40120231978064536,
+  "median_v2_score": 0.48953943080599605,
+  "mean_label_contribution_v1": 0.009190603481661296,
+  "mean_label_contribution_v2": 0.0,
+  "mean_visual_contribution_v1": 0.10000108624809909,
+  "mean_visual_contribution_v2": 0.14999022376710838,
+  "mean_semantic_contribution_v1": 0.30003258744297195,
+  "mean_semantic_contribution_v2": 0.3500380186834673,
+  "spearman_rank_correlation": 0.9210057603566125,
+  "changed_band_count": 2116,
+  "band_transitions": {
+    "Easy": {
+      "Easy": 2493,
+      "Hard": 0,
+      "Medium": 545
+    },
+    "Hard": {
+      "Easy": 0,
+      "Hard": 2525,
+      "Medium": 513
+    },
+    "Medium": {
+      "Easy": 545,
+      "Hard": 513,
+      "Medium": 2072
+    }
+  }
+}

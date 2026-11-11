@@ -312,3 +312,32 @@ def test_contributions_sum_to_score_and_effective_weights_are_explicit() -> None
     assert {"visual_semantic", "visual_only"}.issubset(
         set(result["difficulty_scope"])
     )
+
+
+def test_scoring_preserves_raw_semantic_component_values() -> None:
+    samples, quality, semantic = _inputs()
+    semantic = semantic.copy()
+    semantic["class_centroid_distance"] = np.linspace(0.1, 0.6, len(semantic))
+    semantic["class_confusion_risk"] = np.linspace(0.0, 0.4, len(semantic))
+    semantic["cross_class_margin"] = np.linspace(0.5, -0.2, len(semantic))
+    semantic["augmentation_stability"] = np.linspace(1.0, 0.4, len(semantic))
+    semantic["augmentation_instability"] = 1.0 - semantic[
+        "augmentation_stability"
+    ]
+    semantic["outlier_component"] = np.linspace(0.0, 1.0, len(semantic))
+    semantic["confusion_component"] = np.linspace(0.0, 1.0, len(semantic))
+    semantic["instability_component"] = np.linspace(0.0, 1.0, len(semantic))
+
+    result = score_difficulty(samples, quality, semantic, load_config())
+
+    for column in (
+        "class_centroid_distance",
+        "class_confusion_risk",
+        "cross_class_margin",
+        "augmentation_stability",
+        "augmentation_instability",
+        "outlier_component",
+        "confusion_component",
+        "instability_component",
+    ):
+        assert column in result.columns

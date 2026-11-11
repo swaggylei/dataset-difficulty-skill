@@ -58,6 +58,25 @@ def _file_sha256(path: Path) -> str | None:
     return digest.hexdigest()
 
 
+def clip_checkpoint_kwargs(model_name: str) -> dict[str, Any]:
+    path = Path(model_name)
+    if (
+        path.is_dir()
+        and (path / "pytorch_model.bin").exists()
+        and not (path / "model.safetensors").exists()
+    ):
+        return {"use_safetensors": False}
+    return {}
+
+
+def clip_feature_tensor(features: Any) -> Any:
+    for attribute in ("image_embeds", "pooler_output"):
+        value = getattr(features, attribute, None)
+        if value is not None:
+            return value
+    return features
+
+
 class FeatureCache:
     """One atomic NPZ entry per image content hash and model signature."""
 
@@ -373,6 +392,7 @@ class ClipFeatureExtractor:
         self._model = CLIPModel.from_pretrained(
             self.model_name,
             local_files_only=local_only,
+            **clip_checkpoint_kwargs(self.model_name),
         ).to(runtime_device)
         self._processor = CLIPImageProcessor.from_pretrained(
             self.model_name,
@@ -395,5 +415,6 @@ class ClipFeatureExtractor:
             }
             with self._torch.inference_mode():
                 features = self._model.get_image_features(**inputs)
-            outputs.append(features.detach().cpu().numpy().astype(np.float64))
+            tensor = clip_feature_tensor(features)
+            outputs.append(tensor.detach().cpu().numpy().astype(np.float64))
         return _normalize_rows(np.vstack(outputs))

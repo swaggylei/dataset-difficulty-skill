@@ -8,7 +8,6 @@ from typing import Sequence
 
 from dataset_difficulty import __version__
 from dataset_difficulty.config import load_config
-from dataset_difficulty.pipeline import analyze_dataset
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -78,6 +77,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             or str(config.get("semantic", {}).get("backend", "auto"))
         )
     )
+    if backend in {"auto", "clip"}:
+        try:
+            import torch  # noqa: F401
+        except Exception:
+            pass
+    from dataset_difficulty.pipeline import analyze_dataset
     try:
         result = analyze_dataset(
             Path(args.data_root),

@@ -9,6 +9,20 @@ import cv2
 import numpy as np
 
 
+CIFAR10_CLASSES = [
+    "airplane",
+    "automobile",
+    "bird",
+    "cat",
+    "deer",
+    "dog",
+    "frog",
+    "horse",
+    "ship",
+    "truck",
+]
+
+
 def select_balanced_indices(
     targets: Sequence[int],
     limit: int | None,
@@ -73,7 +87,8 @@ def export_cifar_subset(
         "exported_count": len(indices),
         "class_names": list(class_names),
         "class_counts": {
-            label: rows[1:].count(f",{label},") for label in class_names
+            label: sum(1 for row in rows[1:] if f",{label}," in row)
+            for label in class_names
         },
     }
     (output_path / "dataset_meta.json").write_text(
@@ -82,11 +97,54 @@ def export_cifar_subset(
     return metadata
 
 
+def _image_bytes(record: Any) -> bytes:
+    if isinstance(record, dict):
+        value = record.get("bytes")
+        if value is not None:
+            return bytes(value)
+    if isinstance(record, (bytes, bytearray)):
+        return bytes(record)
+    raise ValueError("Parquet img field does not contain encoded image bytes")
+
+
+def export_cifar_parquet(
+    parquet_path: str | Path,
+    output: str | Path,
+    class_names: Sequence[str],
+    split: str,
+    limit: int = 10000,
+) -> dict[str, Any]:
+    import pandas as pd
+
+    frame = pd.read_parquet(parquet_path)
+    if "img" not in frame or "label" not in frame:
+        raise ValueError("CIFAR parquet must contain img and label columns")
+    images = []
+    for record in frame["img"]:
+        encoded = np.frombuffer(_image_bytes(record), dtype=np.uint8)
+        image_bgr = cv2.imdecode(encoded, cv2.IMREAD_COLOR)
+        if image_bgr is None:
+            raise ValueError("Unable to decode an image from CIFAR parquet")
+        images.append(cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB))
+    return export_cifar_subset(
+        images=np.stack(images),
+        targets=frame["label"].astype(int).tolist(),
+        class_names=class_names,
+        split=split,
+        output=output,
+        limit=limit,
+    )
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Export a reproducible CIFAR-10 image/label directory."
     )
-    parser.add_argument("--root", required=True, help="Torchvision CIFAR-10 data root")
+    parser.add_argument("--root", help="Torchvision CIFAR-10 data root")
+    parser.add_argument(
+        "--parquet",
+        help="Hugging Face-style CIFAR-10 parquet file",
+    )
     parser.add_argument("--output", required=True)
     parser.add_argument("--split", choices=["train", "test"], default="test")
     parser.add_argument("--limit", type=int, default=10000)
@@ -96,6 +154,18 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if args.parquet:
+        metadata = export_cifar_parquet(
+            parquet_path=args.parquet,
+            output=args.output,
+            class_names=CIFAR10_CLASSES,
+            split=args.split,
+            limit=args.limit,
+        )
+        print(json.dumps(metadata, indent=2))
+        return 0
+    if not args.root:
+        raise ValueError("--root is required unless --parquet is supplied")
     from torchvision.datasets import CIFAR10
 
     dataset = CIFAR10(

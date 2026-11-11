@@ -1,0 +1,354 @@
+{
+  "counts": {
+    "total": 10000,
+    "anomalies": 794,
+    "scored": 9206,
+    "unscored": 0,
+    "semantic_available": 9206
+  },
+  "difficulty_bands": {
+    "Medium": 3130,
+    "Hard": 3038,
+    "Easy": 3038,
+    "Anomaly": 794
+  },
+  "splits": {
+    "train": 6444,
+    "test": 1381,
+    "val": 1381,
+    "excluded_anomaly": 794
+  },
+  "classes": {
+    "airplane": 1000,
+    "automobile": 1000,
+    "bird": 1000,
+    "cat": 1000,
+    "deer": 1000,
+    "dog": 1000,
+    "frog": 1000,
+    "horse": 1000,
+    "ship": 1000,
+    "truck": 1000
+  },
+  "anomaly_reasons": {
+    "quality_outlier": 374,
+    "statistical_outlier": 532
+  },
+  "mean_component_coverage": 0.9206,
+  "split_diagnostics": {
+    "ratios": {
+      "train": 0.7,
+      "val": 0.15,
+      "test": 0.15
+    },
+    "seed": 42,
+    "exclude_anomalies": true,
+    "split_mode": "group",
+    "group_count": 9206,
+    "split_unit_count": 9206,
+    "counts": {
+      "excluded_anomaly": 794,
+      "test": 1381,
+      "train": 6444,
+      "val": 1381
+    },
+    "actual_scored_ratios": {
+      "train": 0.6999782750380187,
+      "val": 0.15001086248099066,
+      "test": 0.15001086248099066
+    },
+    "class_distribution": {
+      "train": {
+        "dog": 676,
+        "frog": 667,
+        "horse": 662,
+        "cat": 658,
+        "truck": 658,
+        "automobile": 638,
+        "deer": 633,
+        "bird": 621,
+        "ship": 619,
+        "airplane": 612
+      },
+      "test": {
+        "dog": 145,
+        "frog": 143,
+        "horse": 142,
+        "cat": 141,
+        "truck": 141,
+        "automobile": 137,
+        "deer": 135,
+        "ship": 133,
+        "airplane": 132,
+        "bird": 132
+      },
+      "excluded_anomaly": {
+        "airplane": 124,
+        "ship": 115,
+        "bird": 114,
+        "deer": 96,
+        "automobile": 89,
+        "truck": 61,
+        "cat": 60,
+        "horse": 54,
+        "frog": 47,
+        "dog": 34
+      },
+      "val": {
+        "dog": 145,
+        "frog": 143,
+        "horse": 142,
+        "cat": 141,
+        "truck": 140,
+        "automobile": 136,
+        "deer": 136,
+        "bird": 133,
+        "ship": 133,
+        "airplane": 132
+      }
+    },
+    "difficulty_distribution": {
+      "train": {
+        "Medium": 2190,
+        "Easy": 2128,
+        "Hard": 2126
+      },
+      "test": {
+        "Medium": 470,
+        "Hard": 456,
+        "Easy": 455
+      },
+      "excluded_anomaly": {
+        "Anomaly": 794
+      },
+      "val": {
+        "Medium": 470,
+        "Hard": 456,
+        "Easy": 455
+      }
+    },
+    "groups_spanning_splits": 0,
+    "duplicate_groups_spanning_splits": 0,
+    "leakage_risk": {
+      "level": "low",
+      "groups_spanning_splits": 0,
+      "duplicate_groups_spanning_splits": 0,
+      "messages": [
+        "No group_id or duplicate-group leakage detected."
+      ]
+    },
+    "excluded_anomalies": 794,
+    "strata": [
+      {
+        "split": "train",
+        "class_counts": {
+          "dog": 676,
+          "frog": 667,
+          "horse": 662,
+          "cat": 658,
+          "truck": 658,
+          "automobile": 638,
+          "deer": 633,
+          "bird": 621,
+          "ship": 619,
+          "airplane": 612
+        }
+      },
+      {
+        "split": "test",
+        "class_counts": {
+          "dog": 145,
+          "frog": 143,
+          "horse": 142,
+          "cat": 141,
+          "truck": 141,
+          "automobile": 137,
+          "deer": 135,
+          "ship": 133,
+          "airplane": 132,
+          "bird": 132
+        }
+      },
+      {
+        "split": "val",
+        "class_counts": {
+          "dog": 145,
+          "frog": 143,
+          "horse": 142,
+          "cat": 141,
+          "truck": 140,
+          "automobile": 136,
+          "deer": 136,
+          "bird": 133,
+          "ship": 133,
+          "airplane": 132
+        }
+      }
+    ],
+    "warnings": []
+  },
+  "semantic_backend": "ClipFeatureExtractor",
+  "difficulty_scope": "visual_semantic",
+  "difficulty_scopes": {
+    "visual_semantic": 9206
+  },
+  "score_interpretation": "Composite prior uses visual accessibility and CLIP semantic components.",
+  "semantic_runtime": {
+    "backend": "ClipFeatureExtractor",
+    "requested_device": "cuda",
+    "device": "not_loaded",
+    "model_name": "validation/.work/clip_model",
+    "batch_size": 64,
+    "model_loaded": false,
+    "cache_enabled": true,
+    "eligible_sample_count": 9206,
+    "cache_hits": 9206,
+    "cache_misses": 0,
+    "failure_count": 0,
+    "failure_sample_ids": [],
+    "failure_errors": [],
+    "extract_seconds": 9.990023700000165,
+    "metrics_seconds": 0.5391237000003457,
+    "semantic_seconds": 94.21747090000008,
+    "gpu_peak_allocated_mb": null,
+    "gpu_peak_reserved_mb": null
+  },
+  "performance": {
+    "load_seconds": 63.34749059999922,
+    "quality_seconds": 17.995660199999293,
+    "anomaly_seconds": 0.7870206999996299,
+    "semantic_seconds": 94.22242229999938,
+    "scoring_seconds": 1.6280833000000712,
+    "split_seconds": 6.985768200000166,
+    "analysis_seconds": 184.97203649999938,
+    "report_seconds": 2.4255064999997558,
+    "total_seconds": 187.39754299999913
+  },
+  "configuration": {
+    "project": {
+      "seed": 42,
+      "version": "0.1.0"
+    },
+    "data": {
+      "format": "csv",
+      "path_column": "path",
+      "label_column": "label",
+      "group_column": "group_id",
+      "extensions": [
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".bmp",
+        ".tif",
+        ".tiff",
+        ".webp"
+      ],
+      "ignore_dirs": [
+        ".git",
+        ".dataset_difficulty_cache"
+      ]
+    },
+    "quality": {
+      "blur_laplacian_min": 35.0,
+      "brightness_min": 0.12,
+      "brightness_max": 0.88,
+      "contrast_min": 0.08,
+      "image_entropy_min": 2.0,
+      "spectral_entropy_min": 0.35
+    },
+    "anomaly": {
+      "min_image_size": 32,
+      "robust_z_threshold": 3.5,
+      "robust_min_group_size": 8,
+      "near_duplicate": {
+        "enabled": false,
+        "hamming_threshold": 6,
+        "max_samples": 5000
+      }
+    },
+    "semantic": {
+      "enabled": true,
+      "backend": "clip",
+      "min_class_samples": 2,
+      "clip": {
+        "model_name": "validation/.work/clip_model",
+        "device": "cuda",
+        "batch_size": 64,
+        "allow_download": true,
+        "augmentations": 1
+      },
+      "cache": {
+        "enabled": true,
+        "directory": ".work/clip_cifar_cache"
+      }
+    },
+    "difficulty": {
+      "weights": {
+        "visual": 0.3,
+        "semantic": 0.7
+      },
+      "visual_weights": {
+        "blur": 0.5,
+        "brightness": 0.2,
+        "contrast": 0.3
+      },
+      "visual_complexity_weights": {
+        "image_entropy": 0.34,
+        "spectral_entropy": 0.33,
+        "high_frequency": 0.33
+      },
+      "semantic_weights": {
+        "outlier": 0.4,
+        "confusion": 0.4,
+        "instability": 0.2
+      },
+      "bands": {
+        "quantiles": [
+          0.33,
+          0.67
+        ],
+        "labels": [
+          "Easy",
+          "Medium",
+          "Hard"
+        ]
+      }
+    },
+    "split": {
+      "ratios": {
+        "train": 0.7,
+        "val": 0.15,
+        "test": 0.15
+      },
+      "exclude_anomalies": true,
+      "ensure_val_test_when_possible": true
+    },
+    "report": {
+      "preview_count": 16,
+      "preview_columns": 4,
+      "image_thumbnail_size": 160,
+      "title": "CIFAR-10 Test Split Difficulty Report"
+    }
+  },
+  "warnings": [],
+  "generated_at_utc": "2026-11-11T11:40:54.598558+00:00",
+  "input_root": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test",
+  "label_file": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test\\labels.csv",
+  "output_directory": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\cifar10_test_cache_hit",
+  "artifacts": [
+    "samples.csv",
+    "summary.json",
+    "report.html",
+    "hard_samples.png",
+    "anomaly_samples.png",
+    "split_manifest.csv",
+    "split_summary.json"
+  ],
+  "limitations": [
+    "Difficulty scores are dataset-relative priors, not predicted accuracy.",
+    "Quality issues and visual complexity are not equivalent to task difficulty.",
+    "Label rarity is an independent dataset statistic and contributes zero.",
+    "Visual-only scores do not represent complete semantic difficulty.",
+    "Unavailable metrics remain null and are excluded from weighted scores."
+  ]
+}

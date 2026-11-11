@@ -120,6 +120,14 @@ def score_difficulty(
         "semantic_available",
         "semantic_complexity",
         "semantic_component_coverage",
+        "class_centroid_distance",
+        "class_confusion_risk",
+        "cross_class_margin",
+        "augmentation_stability",
+        "augmentation_instability",
+        "outlier_component",
+        "confusion_component",
+        "instability_component",
     ]
     frame = _merge_missing_columns(samples.copy(), quality, quality_columns)
     frame = _merge_missing_columns(frame, semantic, semantic_columns)

@@ -1,0 +1,121 @@
+{
+  "ratios": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15
+  },
+  "seed": 42,
+  "exclude_anomalies": true,
+  "split_mode": "group",
+  "group_count": 38,
+  "split_unit_count": 38,
+  "counts": {
+    "excluded_anomaly": 2,
+    "test": 4,
+    "train": 30,
+    "val": 4
+  },
+  "actual_scored_ratios": {
+    "train": 0.7894736842105263,
+    "val": 0.10526315789473684,
+    "test": 0.10526315789473684
+  },
+  "class_distribution": {
+    "train": {
+      "dog": 4,
+      "frog": 4,
+      "airplane": 3,
+      "bird": 3,
+      "cat": 3,
+      "horse": 3,
+      "ship": 3,
+      "truck": 3,
+      "automobile": 2,
+      "deer": 2
+    },
+    "val": {
+      "airplane": 1,
+      "automobile": 1,
+      "bird": 1,
+      "horse": 1
+    },
+    "test": {
+      "automobile": 1,
+      "cat": 1,
+      "deer": 1,
+      "truck": 1
+    },
+    "excluded_anomaly": {
+      "deer": 1,
+      "ship": 1
+    }
+  },
+  "difficulty_distribution": {
+    "train": {
+      "Easy": 11,
+      "Medium": 10,
+      "Hard": 9
+    },
+    "val": {
+      "Hard": 3,
+      "Easy": 1
+    },
+    "test": {
+      "Medium": 2,
+      "Hard": 1,
+      "Easy": 1
+    },
+    "excluded_anomaly": {
+      "Anomaly": 2
+    }
+  },
+  "groups_spanning_splits": 0,
+  "duplicate_groups_spanning_splits": 0,
+  "leakage_risk": {
+    "level": "low",
+    "groups_spanning_splits": 0,
+    "duplicate_groups_spanning_splits": 0,
+    "messages": [
+      "No group_id or duplicate-group leakage detected."
+    ]
+  },
+  "excluded_anomalies": 2,
+  "strata": [
+    {
+      "split": "train",
+      "class_counts": {
+        "dog": 4,
+        "frog": 4,
+        "airplane": 3,
+        "bird": 3,
+        "cat": 3,
+        "horse": 3,
+        "ship": 3,
+        "truck": 3,
+        "automobile": 2,
+        "deer": 2
+      }
+    },
+    {
+      "split": "val",
+      "class_counts": {
+        "airplane": 1,
+        "automobile": 1,
+        "bird": 1,
+        "horse": 1
+      }
+    },
+    {
+      "split": "test",
+      "class_counts": {
+        "automobile": 1,
+        "cat": 1,
+        "deer": 1,
+        "truck": 1
+      }
+    }
+  ],
+  "warnings": [
+    "Actual train ratio 0.789 differs from requested 0.700 by more than 0.05."
+  ]
+}
