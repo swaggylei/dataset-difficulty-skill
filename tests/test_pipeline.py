@@ -77,6 +77,10 @@ def test_pipeline_with_injected_features_generates_reports(tmp_path: Path) -> No
     assert (output / "summary.json").exists()
     assert (output / "split_manifest.csv").exists()
     assert result.summary["counts"]["total"] == 8
+    assert result.summary["provenance"]["git_commit"]
+    assert "command" in result.summary["provenance"]
+    assert result.summary["semantic_runtime"]["model_source"] is None
+    assert result.summary["dataset"]["sample_count"] == 8
 
 
 def test_pipeline_without_semantics_keeps_metrics_null(tmp_path: Path) -> None:

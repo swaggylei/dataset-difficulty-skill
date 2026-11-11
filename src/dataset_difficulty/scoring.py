@@ -138,7 +138,19 @@ def score_difficulty(
     anomaly_mask = frame.get(
         "is_anomaly", pd.Series(False, index=frame.index)
     ).fillna(False).astype(bool)
-    eligible = ~anomaly_mask
+    anomaly_types = frame.get(
+        "anomaly_types", pd.Series("", index=frame.index)
+    ).fillna("").astype(str)
+    statistical_only_mask = anomaly_mask & anomaly_types.map(
+        lambda value: {item for item in value.split(";") if item}
+        == {"statistical_outlier"}
+    )
+    include_statistical_only = bool(
+        config.get("split", {}).get("include_statistical_only", True)
+    )
+    soft_anomaly_mask = statistical_only_mask & include_statistical_only
+    excluded_mask = anomaly_mask & ~soft_anomaly_mask
+    eligible = ~excluded_mask
 
     for metric in quality_columns[:-1]:
         if metric not in frame:
@@ -182,6 +194,8 @@ def score_difficulty(
         "semantic_difficulty_component",
         "difficulty_score",
         "component_coverage",
+        "excluded_from_split",
+        "is_statistical_only_anomaly",
     ):
         frame[component] = np.nan
 
@@ -268,6 +282,8 @@ def score_difficulty(
     frame["label_rarity_weight"] = 0.0
     frame["label_rarity_contribution"] = 0.0
     frame["label_rarity_in_difficulty"] = False
+    frame["is_statistical_only_anomaly"] = statistical_only_mask
+    frame["excluded_from_split"] = excluded_mask
 
     weights = config.get("difficulty", {}).get("weights", {})
     visual_weight = float(weights.get("visual", 0.30))
@@ -298,7 +314,7 @@ def score_difficulty(
         + frame.loc[eligible, "semantic_contribution"]
     ).clip(0.0, 1.0)
     frame.loc[eligible, "component_coverage"] = coverage
-    frame.loc[anomaly_mask, "component_coverage"] = 0.0
+    frame.loc[excluded_mask, "component_coverage"] = 0.0
 
     frame.loc[eligible, "difficulty_scope"] = np.where(
         frame.loc[eligible, "difficulty_semantic_component"].notna(),
@@ -309,15 +325,16 @@ def score_difficulty(
             "unscored",
         ),
     )
-    frame.loc[anomaly_mask, "difficulty_scope"] = "anomaly"
+    frame.loc[excluded_mask, "difficulty_scope"] = "anomaly"
     frame["difficulty_band"] = _assign_bands(frame["difficulty_score"], config)
-    frame.loc[anomaly_mask, "difficulty_band"] = "Anomaly"
+    frame.loc[excluded_mask, "difficulty_band"] = "Anomaly"
     frame["sample_status"] = np.select(
         [
-            anomaly_mask,
+            excluded_mask,
+            soft_anomaly_mask,
             frame["difficulty_score"].notna(),
         ],
-        ["Anomaly", "Scored"],
+        ["Anomaly", "Statistically_Unusual", "Scored"],
         default="Unscored",
     )
     return frame

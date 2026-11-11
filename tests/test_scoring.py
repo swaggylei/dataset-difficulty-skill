@@ -343,3 +343,61 @@ def test_scoring_preserves_raw_semantic_component_values() -> None:
         "instability_component",
     ):
         assert column in result.columns
+
+
+def test_statistical_only_anomaly_is_soft_by_default_and_scored() -> None:
+    samples, quality, semantic = _inputs()
+    samples = samples.copy()
+    samples.loc[4, "is_anomaly"] = True
+    samples.loc[4, "anomaly_types"] = "statistical_outlier"
+
+    result = score_difficulty(samples, quality, semantic, load_config())
+
+    assert result.loc[4, "sample_status"] == "Statistically_Unusual"
+    assert result.loc[4, "difficulty_band"] != "Anomaly"
+    assert np.isfinite(result.loc[4, "difficulty_score"])
+    assert result.loc[4, "excluded_from_split"] == False
+
+
+def test_statistical_only_anomaly_can_be_hard_excluded_by_configuration() -> None:
+    samples, quality, semantic = _inputs()
+    samples = samples.copy()
+    samples.loc[4, "is_anomaly"] = True
+    samples.loc[4, "anomaly_types"] = "statistical_outlier"
+    config = load_config(
+        overrides={"split": {"include_statistical_only": False}}
+    )
+
+    result = score_difficulty(samples, quality, semantic, config)
+
+    assert result.loc[4, "sample_status"] == "Anomaly"
+    assert result.loc[4, "difficulty_band"] == "Anomaly"
+    assert np.isnan(result.loc[4, "difficulty_score"])
+    assert result.loc[4, "excluded_from_split"] == True
+
+
+def test_missing_weights_use_only_new_visual_semantic_defaults() -> None:
+    samples, quality, semantic = _inputs()
+
+    result = score_difficulty(samples, quality, semantic, {})
+
+    assert set(result.loc[result["sample_status"].eq("Scored"), "difficulty_visual_weight"]) == {0.30}
+    assert set(result.loc[result["sample_status"].eq("Scored"), "difficulty_semantic_weight"]) == {0.70}
+    assert (result["label_rarity_in_difficulty"] == False).all()
+
+
+def test_visual_only_renormalizes_effective_weight_to_one() -> None:
+    samples, quality, semantic = _inputs()
+    semantic = semantic.copy()
+    semantic["semantic_available"] = False
+    semantic["semantic_complexity"] = np.nan
+
+    result = score_difficulty(samples, quality, semantic, load_config())
+
+    scored = result[result["sample_status"].eq("Scored")]
+    assert np.allclose(scored["difficulty_visual_effective_weight"], 1.0)
+    assert np.allclose(scored["difficulty_semantic_effective_weight"], 0.0)
+    assert np.allclose(
+        scored["difficulty_score"],
+        scored["visual_contribution"],
+    )

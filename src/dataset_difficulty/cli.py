@@ -69,6 +69,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     if clip_overrides:
         overrides["semantic"] = {"clip": clip_overrides}
     config = load_config(args.config, overrides=overrides)
+    if args.config:
+        config.setdefault("project", {})["config_file"] = args.config
     backend = (
         "disabled"
         if args.no_semantic

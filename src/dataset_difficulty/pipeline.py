@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import logging
+import subprocess
+import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -49,6 +51,36 @@ def _is_within(path: Path, parent: Path) -> bool:
         resolved_path == resolved_parent
         or resolved_parent in resolved_path.parents
     )
+
+
+def _repository_info() -> dict[str, Any]:
+    root = Path(__file__).resolve().parents[2]
+    try:
+        commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        status = subprocess.run(
+            ["git", "status", "--porcelain", "--untracked-files=no"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        return {
+            "git_commit": commit,
+            "git_dirty": bool(status),
+            "repository_root": str(root),
+        }
+    except (OSError, subprocess.SubprocessError):
+        return {
+            "git_commit": None,
+            "git_dirty": None,
+            "repository_root": str(root),
+        }
 
 
 def _quality_table(samples: pd.DataFrame, config: dict[str, Any]) -> pd.DataFrame:
@@ -115,6 +147,7 @@ def _empty_semantic_runtime(
         "requested_device": "not_loaded",
         "device": "not_loaded",
         "model_name": None,
+        "model_source": None,
         "batch_size": None,
         "model_loaded": False,
         "cache_enabled": bool(cache_enabled),
@@ -365,6 +398,14 @@ def _semantic_analysis(
         "metrics_seconds": float(metrics_seconds),
         "semantic_seconds": float(time.perf_counter() - semantic_started),
     }
+    model_name = semantic_runtime.get("model_name")
+    semantic_runtime["model_source"] = (
+        "local_directory"
+        if model_name and Path(str(model_name)).is_dir()
+        else "transformers_model_id"
+        if model_name
+        else None
+    )
     return semantic, backend_name, warnings, semantic_runtime
 
 
@@ -384,12 +425,16 @@ def _build_summary(
     config: dict[str, Any],
     semantic_runtime: dict[str, Any],
     performance: dict[str, float],
+    provenance: dict[str, Any],
+    dataset_info: dict[str, Any],
 ) -> dict[str, Any]:
     status_counts = samples["sample_status"].value_counts().to_dict()
     band_counts = samples["difficulty_band"].value_counts().to_dict()
     split_counts = samples["split"].value_counts().to_dict()
     class_counts = samples["label"].fillna("").replace("", "<empty>").value_counts()
-    scored = samples[samples["sample_status"].eq("Scored")]
+    scored = samples[
+        samples["sample_status"].isin(["Scored", "Statistically_Unusual"])
+    ]
     scope_counts = scored["difficulty_scope"].value_counts().to_dict()
     scored_scopes = set(scope_counts)
     if not scored_scopes:
@@ -418,7 +463,10 @@ def _build_summary(
         "counts": {
             "total": int(len(samples)),
             "anomalies": int(samples["is_anomaly"].sum()),
-            "scored": int(status_counts.get("Scored", 0)),
+            "scored": int(
+                status_counts.get("Scored", 0)
+                + status_counts.get("Statistically_Unusual", 0)
+            ),
             "unscored": int(status_counts.get("Unscored", 0)),
             "semantic_available": int(
                 samples["semantic_available"].fillna(False).sum()
@@ -445,6 +493,8 @@ def _build_summary(
         "score_interpretation": interpretations[difficulty_scope],
         "semantic_runtime": semantic_runtime,
         "performance": performance,
+        "provenance": provenance,
+        "dataset": dataset_info,
         "configuration": config,
         "warnings": warnings,
     }
@@ -463,6 +513,7 @@ def analyze_dataset(
     root = Path(data_root).resolve()
     output = Path(output_dir).resolve()
     analysis_started = time.perf_counter()
+    repository_info = _repository_info()
     data_config = config.get("data", {})
     cache_config = config.get("semantic", {}).get("cache", {})
     cache_value = Path(
@@ -497,6 +548,13 @@ def analyze_dataset(
         ),
         exclude_paths=exclusions,
     )
+    dataset_info = {
+        "root": str(root),
+        "label_file": str(resolved_label_file) if resolved_label_file else None,
+        "format": loaded.data_format,
+        "sample_count": int(len(loaded.samples)),
+        "scope": "all samples returned by the configured dataset loader",
+    }
     load_seconds = time.perf_counter() - load_started
     LOGGER.info("Loaded %d samples", len(loaded.samples))
     quality_started = time.perf_counter()
@@ -527,6 +585,14 @@ def analyze_dataset(
     scored = score_difficulty(anomalous, quality, semantic, config)
     scoring_seconds = time.perf_counter() - scoring_started
     scored_rows = scored["sample_status"].eq("Scored")
+    soft_anomaly_count = int(
+        scored["sample_status"].eq("Statistically_Unusual").sum()
+    )
+    if soft_anomaly_count:
+        pipeline_warnings.append(
+            f"{soft_anomaly_count} statistical-only anomalies were retained "
+            "as valid samples in scoring and splitting."
+        )
     if scored_rows.any() and not scored.loc[scored_rows, "semantic_available"].any():
         semantic_warnings.append(
             "Difficulty score is visual-only because CLIP semantics are unavailable; "
@@ -569,6 +635,12 @@ def analyze_dataset(
         config,
         semantic_runtime,
         performance,
+        {
+            **repository_info,
+            "command": " ".join(sys.argv),
+            "config_path": config.get("project", {}).get("config_file"),
+        },
+        dataset_info,
     )
     result = AnalysisResult(
         samples=split_result.assignment,

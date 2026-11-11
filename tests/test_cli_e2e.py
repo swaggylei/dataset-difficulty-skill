@@ -119,3 +119,7 @@ def test_cli_group_column_keeps_groups_in_one_split(tmp_path: Path) -> None:
         "split"
     ].nunique()
     assert grouped.max() == 1
+    summary = json.loads((output / "summary.json").read_text(encoding="utf-8"))
+    assert summary["split_diagnostics"]["split_mode"] == "group"
+    assert summary["split_diagnostics"]["group_count"] == 8
+    assert summary["split_diagnostics"]["groups_spanning_splits"] == 0
