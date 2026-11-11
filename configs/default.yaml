@@ -1,0 +1,83 @@
+project:
+  seed: 42
+  version: "0.1.0"
+
+data:
+  format: auto
+  path_column: path
+  label_column: label
+  extensions:
+    - .jpg
+    - .jpeg
+    - .png
+    - .bmp
+    - .tif
+    - .tiff
+    - .webp
+  ignore_dirs:
+    - .git
+    - .dataset_difficulty_cache
+
+quality:
+  blur_laplacian_min: 35.0
+  brightness_min: 0.12
+  brightness_max: 0.88
+  contrast_min: 0.08
+  image_entropy_min: 2.0
+  spectral_entropy_min: 0.35
+
+anomaly:
+  min_image_size: 64
+  robust_z_threshold: 3.5
+  robust_min_group_size: 8
+  near_duplicate:
+    enabled: true
+    hamming_threshold: 6
+    max_samples: 5000
+
+semantic:
+  enabled: true
+  backend: auto
+  min_class_samples: 2
+  clip:
+    model_name: openai/clip-vit-base-patch32
+    device: auto
+    batch_size: 16
+    allow_download: false
+    augmentations: 2
+  cache:
+    enabled: true
+    directory: .dataset_difficulty_cache
+
+difficulty:
+  weights:
+    visual: 0.20
+    semantic: 0.60
+    label: 0.20
+  visual_weights:
+    blur: 0.30
+    brightness: 0.15
+    contrast: 0.15
+    frequency: 0.15
+    entropy: 0.25
+  semantic_weights:
+    outlier: 0.40
+    confusion: 0.40
+    instability: 0.20
+  bands:
+    quantiles: [0.33, 0.67]
+    labels: [Easy, Medium, Hard]
+
+split:
+  ratios:
+    train: 0.70
+    val: 0.15
+    test: 0.15
+  exclude_anomalies: true
+  ensure_val_test_when_possible: true
+
+report:
+  preview_count: 12
+  preview_columns: 4
+  image_thumbnail_size: 180
+  title: "Dataset Difficulty Prior Report"

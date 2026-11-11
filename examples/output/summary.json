@@ -1,0 +1,215 @@
+{
+  "counts": {
+    "total": 9,
+    "anomalies": 6,
+    "scored": 3,
+    "unscored": 0,
+    "semantic_available": 0
+  },
+  "difficulty_bands": {
+    "Anomaly": 6,
+    "Easy": 1,
+    "Hard": 1,
+    "Medium": 1
+  },
+  "splits": {
+    "excluded_anomaly": 6,
+    "train": 2,
+    "test": 1
+  },
+  "classes": {
+    "cat": 5,
+    "dog": 4
+  },
+  "anomaly_reasons": {
+    "corrupt_image": 1,
+    "exact_duplicate": 2,
+    "quality_outlier": 5
+  },
+  "mean_component_coverage": 0.13333333333333336,
+  "split_diagnostics": {
+    "ratios": {
+      "train": 0.7,
+      "val": 0.15,
+      "test": 0.15
+    },
+    "seed": 42,
+    "exclude_anomalies": true,
+    "counts": {
+      "excluded_anomaly": 6,
+      "test": 1,
+      "train": 2
+    },
+    "actual_scored_ratios": {
+      "train": 0.6666666666666666,
+      "val": 0.0,
+      "test": 0.3333333333333333
+    },
+    "excluded_anomalies": 6,
+    "strata": [
+      {
+        "label": "dog",
+        "difficulty_band": "Easy",
+        "size": 1,
+        "counts": {
+          "train": 1,
+          "val": 0,
+          "test": 0
+        }
+      },
+      {
+        "label": "dog",
+        "difficulty_band": "Hard",
+        "size": 1,
+        "counts": {
+          "train": 1,
+          "val": 0,
+          "test": 0
+        }
+      },
+      {
+        "label": "dog",
+        "difficulty_band": "Medium",
+        "size": 1,
+        "counts": {
+          "train": 0,
+          "val": 0,
+          "test": 1
+        }
+      }
+    ],
+    "warnings": [
+      "Strata label='dog', band='Easy', size=1 cannot fully satisfy validation/test quotas.",
+      "Strata label='dog', band='Hard', size=1 cannot fully satisfy validation/test quotas.",
+      "Strata label='dog', band='Medium', size=1 cannot fully satisfy validation/test quotas."
+    ]
+  },
+  "semantic_backend": "disabled",
+  "configuration": {
+    "project": {
+      "seed": 42,
+      "version": "0.1.0"
+    },
+    "data": {
+      "format": "csv",
+      "path_column": "path",
+      "label_column": "label",
+      "extensions": [
+        ".jpg",
+        ".jpeg",
+        ".png",
+        ".bmp",
+        ".tif",
+        ".tiff",
+        ".webp"
+      ],
+      "ignore_dirs": [
+        ".git",
+        ".dataset_difficulty_cache"
+      ]
+    },
+    "quality": {
+      "blur_laplacian_min": 35.0,
+      "brightness_min": 0.12,
+      "brightness_max": 0.88,
+      "contrast_min": 0.08,
+      "image_entropy_min": 2.0,
+      "spectral_entropy_min": 0.35
+    },
+    "anomaly": {
+      "min_image_size": 64,
+      "robust_z_threshold": 3.5,
+      "robust_min_group_size": 8,
+      "near_duplicate": {
+        "enabled": true,
+        "hamming_threshold": 6,
+        "max_samples": 5000
+      }
+    },
+    "semantic": {
+      "enabled": true,
+      "backend": "auto",
+      "min_class_samples": 2,
+      "clip": {
+        "model_name": "openai/clip-vit-base-patch32",
+        "device": "auto",
+        "batch_size": 16,
+        "allow_download": false,
+        "augmentations": 2
+      },
+      "cache": {
+        "enabled": true,
+        "directory": ".dataset_difficulty_cache"
+      }
+    },
+    "difficulty": {
+      "weights": {
+        "visual": 0.2,
+        "semantic": 0.6,
+        "label": 0.2
+      },
+      "visual_weights": {
+        "blur": 0.3,
+        "brightness": 0.15,
+        "contrast": 0.15,
+        "frequency": 0.15,
+        "entropy": 0.25
+      },
+      "semantic_weights": {
+        "outlier": 0.4,
+        "confusion": 0.4,
+        "instability": 0.2
+      },
+      "bands": {
+        "quantiles": [
+          0.33,
+          0.67
+        ],
+        "labels": [
+          "Easy",
+          "Medium",
+          "Hard"
+        ]
+      }
+    },
+    "split": {
+      "ratios": {
+        "train": 0.7,
+        "val": 0.15,
+        "test": 0.15
+      },
+      "exclude_anomalies": true,
+      "ensure_val_test_when_possible": true
+    },
+    "report": {
+      "preview_count": 12,
+      "preview_columns": 4,
+      "image_thumbnail_size": 180,
+      "title": "Dataset Difficulty Prior Report"
+    }
+  },
+  "warnings": [
+    "Semantic metrics are disabled; semantic fields remain null.",
+    "Strata label='dog', band='Easy', size=1 cannot fully satisfy validation/test quotas.",
+    "Strata label='dog', band='Hard', size=1 cannot fully satisfy validation/test quotas.",
+    "Strata label='dog', band='Medium', size=1 cannot fully satisfy validation/test quotas."
+  ],
+  "generated_at_utc": "2026-11-11T09:14:33.658686+00:00",
+  "input_root": "E:\\大学\\aiskill\\dataset-difficulty-skill\\examples\\toy_dataset",
+  "label_file": "E:\\大学\\aiskill\\dataset-difficulty-skill\\examples\\toy_dataset\\labels.csv",
+  "output_directory": "E:\\大学\\aiskill\\dataset-difficulty-skill\\examples\\output",
+  "artifacts": [
+    "samples.csv",
+    "summary.json",
+    "report.html",
+    "hard_samples.png",
+    "anomaly_samples.png",
+    "split_manifest.csv",
+    "split_summary.json"
+  ],
+  "limitations": [
+    "Difficulty scores are dataset-relative priors, not predicted accuracy.",
+    "Quality issues are not equivalent to semantic difficulty.",
+    "Unavailable metrics remain null and are excluded from weighted scores."
+  ]
+}

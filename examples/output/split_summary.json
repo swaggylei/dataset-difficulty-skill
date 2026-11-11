@@ -1,0 +1,57 @@
+{
+  "ratios": {
+    "train": 0.7,
+    "val": 0.15,
+    "test": 0.15
+  },
+  "seed": 42,
+  "exclude_anomalies": true,
+  "counts": {
+    "excluded_anomaly": 6,
+    "test": 1,
+    "train": 2
+  },
+  "actual_scored_ratios": {
+    "train": 0.6666666666666666,
+    "val": 0.0,
+    "test": 0.3333333333333333
+  },
+  "excluded_anomalies": 6,
+  "strata": [
+    {
+      "label": "dog",
+      "difficulty_band": "Easy",
+      "size": 1,
+      "counts": {
+        "train": 1,
+        "val": 0,
+        "test": 0
+      }
+    },
+    {
+      "label": "dog",
+      "difficulty_band": "Hard",
+      "size": 1,
+      "counts": {
+        "train": 1,
+        "val": 0,
+        "test": 0
+      }
+    },
+    {
+      "label": "dog",
+      "difficulty_band": "Medium",
+      "size": 1,
+      "counts": {
+        "train": 0,
+        "val": 0,
+        "test": 1
+      }
+    }
+  ],
+  "warnings": [
+    "Strata label='dog', band='Easy', size=1 cannot fully satisfy validation/test quotas.",
+    "Strata label='dog', band='Hard', size=1 cannot fully satisfy validation/test quotas.",
+    "Strata label='dog', band='Medium', size=1 cannot fully satisfy validation/test quotas."
+  ]
+}

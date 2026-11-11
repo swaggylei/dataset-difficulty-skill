@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dataset Difficulty Prior Report</title>
+  <style>
+    body { margin: 0; background: #f4f6f8; color: #17212b;
+      font-family: "Segoe UI", Arial, sans-serif; line-height: 1.45; }
+    main { max-width: 1180px; margin: 0 auto; padding: 28px; }
+    header { border-bottom: 3px solid #176b87; padding-bottom: 14px; margin-bottom: 22px; }
+    h1 { font-size: 29px; margin: 0 0 8px; letter-spacing: 0; }
+    h2 { font-size: 20px; margin: 28px 0 12px; }
+    .note { color: #4c5b67; max-width: 860px; }
+    .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 10px; margin: 18px 0; }
+    .metric { background: white; border: 1px solid #d7e0e5; border-radius: 6px;
+      padding: 11px 13px; }
+    .metric span { display: block; color: #5b6a75; font-size: 12px; text-transform: uppercase; }
+    .metric strong { font-size: 22px; }
+    .table-wrap { overflow-x: auto; background: white; border: 1px solid #d7e0e5; }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; }
+    th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #e5ebee;
+      white-space: nowrap; }
+    th { background: #edf2f4; font-weight: 600; }
+    img { max-width: 100%; border: 1px solid #d7e0e5; background: white; }
+    a { color: #176b87; }
+    .warnings { background: #fff8e6; border: 1px solid #ead697; border-radius: 6px;
+      padding: 10px 18px; }
+    .empty { color: #6a7780; }
+    </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Dataset Difficulty Prior Report</h1>
+    <p class="note">Training-free relative difficulty prior. Scores are not
+    accuracy predictions. Anomalies are listed separately from Easy, Medium,
+    and Hard bands.</p>
+  </header>
+  <section><h2>Dataset Counts</h2><div class="metrics"><div class="metric"><span>total</span><strong>9</strong></div><div class="metric"><span>anomalies</span><strong>6</strong></div><div class="metric"><span>scored</span><strong>3</strong></div><div class="metric"><span>unscored</span><strong>0</strong></div><div class="metric"><span>semantic_available</span><strong>0</strong></div></div></section>
+  <section>
+    <h2>Difficulty Bands</h2>
+    <p class="note">{&quot;Anomaly&quot;: 6, &quot;Easy&quot;: 1, &quot;Hard&quot;: 1, &quot;Medium&quot;: 1}</p>
+    <h2>Split Counts</h2>
+    <p class="note">{&quot;excluded_anomaly&quot;: 6, &quot;train&quot;: 2, &quot;test&quot;: 1}</p>
+  </section>
+  <section>
+    <h2>Hardest Scored Samples</h2>
+    <div class="table-wrap"><table><thead><tr><th>sample_id</th><th>rel_path</th><th>label</th><th>difficulty_band</th><th>difficulty_score</th><th>component_coverage</th><th>semantic_complexity</th><th>anomaly_types</th><th>split</th></tr></thead><tbody><tr><td>9e318e7d62033dbd72fb</td><td>dog/01_texture.png</td><td>dog</td><td>Hard</td><td>0.3000</td><td>0.4000</td><td>n/a</td><td></td><td>train</td></tr><tr><td>75424e6077af5c87f52e</td><td>dog/02_texture.png</td><td>dog</td><td>Medium</td><td>0.2583</td><td>0.4000</td><td>n/a</td><td></td><td>test</td></tr><tr><td>828d94330773e5e7c801</td><td>dog/00_texture.png</td><td>dog</td><td>Easy</td><td>0.2167</td><td>0.4000</td><td>n/a</td><td></td><td>train</td></tr></tbody></table></div>
+  </section>
+  <section>
+    <h2>Hard Sample Preview</h2>
+    <img src="hard_samples.png" alt="Hard sample preview">
+  </section>
+  <section>
+    <h2>Anomaly Samples</h2>
+    <div class="table-wrap"><table><thead><tr><th>sample_id</th><th>rel_path</th><th>label</th><th>difficulty_band</th><th>difficulty_score</th><th>component_coverage</th><th>semantic_complexity</th><th>anomaly_types</th><th>split</th></tr></thead><tbody><tr><td>925c3b14398636908fdf</td><td>cat/00_texture.png</td><td>cat</td><td>Anomaly</td><td>n/a</td><td>0.0000</td><td>n/a</td><td>exact_duplicate;quality_outlier</td><td>excluded_anomaly</td></tr><tr><td>395234e3fb969cd3f76c</td><td>cat/01_texture.png</td><td>cat</td><td>Anomaly</td><td>n/a</td><td>0.0000</td><td>n/a</td><td>quality_outlier</td><td>excluded_anomaly</td></tr><tr><td>ca4368843090603f76b9</td><td>cat/02_texture.png</td><td>cat</td><td>Anomaly</td><td>n/a</td><td>0.0000</td><td>n/a</td><td>quality_outlier</td><td>excluded_anomaly</td></tr><tr><td>d7b742f4a7ce53235f59</td><td>cat/03_exact_duplicate.png</td><td>cat</td><td>Anomaly</td><td>n/a</td><td>0.0000</td><td>n/a</td><td>exact_duplicate;quality_outlier</td><td>excluded_anomaly</td></tr><tr><td>7740cb2466eeb82779b2</td><td>cat/04_blurred.png</td><td>cat</td><td>Anomaly</td><td>n/a</td><td>0.0000</td><td>n/a</td><td>quality_outlier</td><td>excluded_anomaly</td></tr><tr><td>25632d8d7789acdd3abc</td><td>dog/04_corrupt.png</td><td>dog</td><td>Anomaly</td><td>n/a</td><td>0.0000</td><td>n/a</td><td>corrupt_image</td><td>excluded_anomaly</td></tr></tbody></table></div>
+    <img src="anomaly_samples.png" alt="Anomaly sample preview">
+  </section>
+  <section>
+    <h2>Warnings</h2>
+    <div class="warnings"><ul><li>Semantic metrics are disabled; semantic fields remain null.</li><li>Strata label=&#x27;dog&#x27;, band=&#x27;Easy&#x27;, size=1 cannot fully satisfy validation/test quotas.</li><li>Strata label=&#x27;dog&#x27;, band=&#x27;Hard&#x27;, size=1 cannot fully satisfy validation/test quotas.</li><li>Strata label=&#x27;dog&#x27;, band=&#x27;Medium&#x27;, size=1 cannot fully satisfy validation/test quotas.</li></ul></div>
+  </section>
+  <section>
+    <h2>Artifacts</h2>
+    <ul>
+      <li><a href="samples.csv">samples.csv</a></li>
+      <li><a href="summary.json">summary.json</a></li>
+      <li><a href="split_manifest.csv">split_manifest.csv</a></li>
+      <li><a href="split_summary.json">split_summary.json</a></li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

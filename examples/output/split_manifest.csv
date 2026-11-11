@@ -1,0 +1,10 @@
+﻿sample_id,path,rel_path,label,difficulty_band,difficulty_score,component_coverage,split,is_anomaly,anomaly_types
+925c3b14398636908fdf,E:\大学\aiskill\dataset-difficulty-skill\examples\toy_dataset\cat\00_texture.png,cat/00_texture.png,cat,Anomaly,,0.0,excluded_anomaly,True,exact_duplicate;quality_outlier
+395234e3fb969cd3f76c,E:\大学\aiskill\dataset-difficulty-skill\examples\toy_dataset\cat\01_texture.png,cat/01_texture.png,cat,Anomaly,,0.0,excluded_anomaly,True,quality_outlier
+ca4368843090603f76b9,E:\大学\aiskill\dataset-difficulty-skill\examples\toy_dataset\cat\02_texture.png,cat/02_texture.png,cat,Anomaly,,0.0,excluded_anomaly,True,quality_outlier
+d7b742f4a7ce53235f59,E:\大学\aiskill\dataset-difficulty-skill\examples\toy_dataset\cat\03_exact_duplicate.png,cat/03_exact_duplicate.png,cat,Anomaly,,0.0,excluded_anomaly,True,exact_duplicate;quality_outlier
+7740cb2466eeb82779b2,E:\大学\aiskill\dataset-difficulty-skill\examples\toy_dataset\cat\04_blurred.png,cat/04_blurred.png,cat,Anomaly,,0.0,excluded_anomaly,True,quality_outlier
+828d94330773e5e7c801,E:\大学\aiskill\dataset-difficulty-skill\examples\toy_dataset\dog\00_texture.png,dog/00_texture.png,dog,Easy,0.21666666666666667,0.4,train,False,
+9e318e7d62033dbd72fb,E:\大学\aiskill\dataset-difficulty-skill\examples\toy_dataset\dog\01_texture.png,dog/01_texture.png,dog,Hard,0.3,0.4,train,False,
+75424e6077af5c87f52e,E:\大学\aiskill\dataset-difficulty-skill\examples\toy_dataset\dog\02_texture.png,dog/02_texture.png,dog,Medium,0.2583333333333333,0.4,test,False,
+25632d8d7789acdd3abc,E:\大学\aiskill\dataset-difficulty-skill\examples\toy_dataset\dog\04_corrupt.png,dog/04_corrupt.png,dog,Anomaly,,0.0,excluded_anomaly,True,corrupt_image

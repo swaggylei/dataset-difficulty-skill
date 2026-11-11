@@ -1,0 +1,10 @@
+path,label
+cat/00_texture.png,cat
+cat/01_texture.png,cat
+cat/02_texture.png,cat
+cat/03_exact_duplicate.png,cat
+cat/04_blurred.png,cat
+dog/00_texture.png,dog
+dog/01_texture.png,dog
+dog/02_texture.png,dog
+dog/04_corrupt.png,dog

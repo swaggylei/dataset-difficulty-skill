@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dataset-difficulty-skill"
+version = "0.1.0"
+description = "Training-free image classification dataset difficulty prior analysis"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+license = "MIT"
+authors = [{ name = "Dataset Difficulty Skill" }]
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.1",
+  "opencv-python-headless>=4.9",
+  "scikit-learn>=1.4",
+  "matplotlib>=3.8",
+  "PyYAML>=6.0",
+  "torch>=2.1",
+  "transformers>=4.40",
+  "pillow>=10.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+dataset-difficulty = "dataset_difficulty.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+dataset_difficulty = ["default.yaml"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-ra"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dataset Difficulty"
+  short_description: "Training-free image dataset difficulty prior analysis"
+  default_prompt: "Use $dataset-difficulty-skill to audit an image classification dataset before training."

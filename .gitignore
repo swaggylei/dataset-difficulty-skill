@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.pytest_tmp/
+.test_artifacts/
+.test_tmp/
+.venv/
+build/
+.wheelhouse/
+.wheel_tmp/
+*.egg-info/
+.dataset_difficulty_cache/
