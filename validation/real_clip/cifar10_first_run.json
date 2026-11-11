@@ -2,22 +2,22 @@
   "counts": {
     "total": 10000,
     "anomalies": 794,
-    "scored": 9206,
+    "scored": 9626,
     "unscored": 0,
     "semantic_available": 9206,
     "semantic_embeddings": 9206
   },
   "difficulty_bands": {
-    "Medium": 3130,
-    "Hard": 3038,
-    "Easy": 3038,
-    "Anomaly": 794
+    "Medium": 3272,
+    "Hard": 3177,
+    "Easy": 3177,
+    "Anomaly": 374
   },
   "splits": {
-    "train": 6444,
-    "test": 1381,
-    "val": 1381,
-    "excluded_anomaly": 794
+    "train": 6739,
+    "val": 1444,
+    "test": 1443,
+    "excluded_anomaly": 374
   },
   "classes": {
     "airplane": 1000,
@@ -35,7 +35,7 @@
     "quality_outlier": 374,
     "statistical_outlier": 532
   },
-  "mean_component_coverage": 0.9206,
+  "mean_component_coverage": 0.9332,
   "split_diagnostics": {
     "ratios": {
       "train": 0.7,
@@ -45,87 +45,87 @@
     "seed": 42,
     "exclude_anomalies": true,
     "split_mode": "group",
-    "group_count": 9206,
-    "split_unit_count": 9206,
+    "group_count": 9626,
+    "split_unit_count": 9626,
     "counts": {
-      "excluded_anomaly": 794,
-      "test": 1381,
-      "train": 6444,
-      "val": 1381
+      "excluded_anomaly": 374,
+      "test": 1443,
+      "train": 6739,
+      "val": 1444
     },
     "actual_scored_ratios": {
-      "train": 0.6999782750380187,
-      "val": 0.15001086248099066,
-      "test": 0.15001086248099066
+      "train": 0.7000831082484936,
+      "val": 0.15001038853106172,
+      "test": 0.14990650322044463
     },
     "class_distribution": {
       "train": {
-        "dog": 676,
-        "frog": 667,
-        "horse": 662,
-        "cat": 658,
-        "truck": 658,
-        "automobile": 638,
-        "deer": 633,
-        "bird": 621,
-        "ship": 619,
-        "airplane": 612
+        "dog": 696,
+        "frog": 694,
+        "horse": 693,
+        "cat": 692,
+        "automobile": 689,
+        "truck": 686,
+        "bird": 651,
+        "deer": 651,
+        "ship": 644,
+        "airplane": 643
       },
       "test": {
-        "dog": 145,
-        "frog": 143,
-        "horse": 142,
-        "cat": 141,
-        "truck": 141,
-        "automobile": 137,
-        "deer": 135,
-        "ship": 133,
-        "airplane": 132,
-        "bird": 132
+        "dog": 149,
+        "horse": 149,
+        "cat": 148,
+        "frog": 148,
+        "automobile": 147,
+        "truck": 147,
+        "bird": 140,
+        "deer": 139,
+        "airplane": 138,
+        "ship": 138
       },
       "excluded_anomaly": {
-        "airplane": 124,
-        "ship": 115,
-        "bird": 114,
-        "deer": 96,
-        "automobile": 89,
-        "truck": 61,
-        "cat": 60,
-        "horse": 54,
-        "frog": 47,
-        "dog": 34
+        "airplane": 82,
+        "ship": 80,
+        "bird": 70,
+        "deer": 70,
+        "truck": 20,
+        "automobile": 16,
+        "cat": 12,
+        "frog": 9,
+        "horse": 9,
+        "dog": 6
       },
       "val": {
-        "dog": 145,
-        "frog": 143,
-        "horse": 142,
-        "cat": 141,
-        "truck": 140,
-        "automobile": 136,
-        "deer": 136,
-        "bird": 133,
-        "ship": 133,
-        "airplane": 132
+        "dog": 149,
+        "frog": 149,
+        "horse": 149,
+        "automobile": 148,
+        "cat": 148,
+        "truck": 147,
+        "deer": 140,
+        "bird": 139,
+        "ship": 138,
+        "airplane": 137
       }
     },
     "difficulty_distribution": {
       "train": {
-        "Medium": 2190,
-        "Easy": 2128,
-        "Hard": 2126
+        "Medium": 2291,
+        "Hard": 2225,
+        "Easy": 2223
       },
       "test": {
-        "Medium": 470,
-        "Hard": 456,
-        "Easy": 455
+        "Medium": 490,
+        "Easy": 477,
+        "Hard": 476
       },
       "excluded_anomaly": {
-        "Anomaly": 794
+        "Anomaly": 374
       },
       "val": {
-        "Medium": 470,
-        "Hard": 456,
-        "Easy": 455
+        "Medium": 491,
+        "Easy": 477,
+        "Hard": 476
       }
     },
     "groups_spanning_splits": 0,
@@ -138,67 +138,69 @@
         "No group_id or duplicate-group leakage detected."
       ]
     },
-    "excluded_anomalies": 794,
+    "excluded_anomalies": 374,
     "strata": [
       {
         "split": "train",
         "class_counts": {
-          "dog": 676,
-          "frog": 667,
-          "horse": 662,
-          "cat": 658,
-          "truck": 658,
-          "automobile": 638,
-          "deer": 633,
-          "bird": 621,
-          "ship": 619,
-          "airplane": 612
+          "dog": 696,
+          "frog": 694,
+          "horse": 693,
+          "cat": 692,
+          "automobile": 689,
+          "truck": 686,
+          "bird": 651,
+          "deer": 651,
+          "ship": 644,
+          "airplane": 643
         }
       },
       {
         "split": "test",
         "class_counts": {
-          "dog": 145,
-          "frog": 143,
-          "horse": 142,
-          "cat": 141,
-          "truck": 141,
-          "automobile": 137,
-          "deer": 135,
-          "ship": 133,
-          "airplane": 132,
-          "bird": 132
+          "dog": 149,
+          "horse": 149,
+          "cat": 148,
+          "frog": 148,
+          "automobile": 147,
+          "truck": 147,
+          "bird": 140,
+          "deer": 139,
+          "airplane": 138,
+          "ship": 138
         }
       },
       {
         "split": "val",
         "class_counts": {
-          "dog": 145,
-          "frog": 143,
-          "horse": 142,
-          "cat": 141,
-          "truck": 140,
-          "automobile": 136,
-          "deer": 136,
-          "bird": 133,
-          "ship": 133,
-          "airplane": 132
+          "dog": 149,
+          "frog": 149,
+          "horse": 149,
+          "automobile": 148,
+          "cat": 148,
+          "truck": 147,
+          "deer": 140,
+          "bird": 139,
+          "ship": 138,
+          "airplane": 137
         }
       }
     ],
     "warnings": []
   },
   "semantic_backend": "ClipFeatureExtractor",
-  "difficulty_scope": "visual_semantic",
+  "difficulty_scope": "mixed",
   "difficulty_scopes": {
-    "visual_semantic": 9206
+    "visual_semantic": 9206,
+    "visual_only": 420
   },
-  "score_interpretation": "Composite prior uses visual accessibility and CLIP semantic components.",
+  "score_interpretation": "Some scored samples include CLIP semantics and others are visual-only; consult difficulty_scope per row.",
   "semantic_runtime": {
     "backend": "ClipFeatureExtractor",
     "requested_device": "cuda",
     "device": "cuda",
     "model_name": "validation/.work/clip_model",
+    "model_source": "local_directory",
     "batch_size": 64,
     "model_loaded": true,
     "cache_enabled": true,
@@ -208,28 +210,43 @@
     "failure_count": 0,
     "failure_sample_ids": [],
     "failure_errors": [],
-    "extract_seconds": 95.08439120000003,
-    "prepare_seconds": 50.427022800000486,
-    "metrics_seconds": 0.480442199999743,
-    "semantic_seconds": 146.04038149999906,
+    "extract_seconds": 83.80179909999788,
+    "prepare_seconds": 98.97968029999902,
+    "metrics_seconds": 0.4851849000006041,
+    "semantic_seconds": 183.31323879999763,
     "gpu_peak_allocated_mb": 773.4541015625,
     "gpu_peak_reserved_mb": 914.0
   },
   "performance": {
-    "load_seconds": 67.16352670000015,
-    "quality_seconds": 78.79346860000078,
-    "anomaly_seconds": 0.7631395999997039,
-    "semantic_seconds": 146.04773150000074,
-    "scoring_seconds": 1.8181963999995787,
-    "split_seconds": 7.470240000000558,
-    "analysis_seconds": 302.06207130000075,
-    "report_seconds": 2.754959100000633,
-    "total_seconds": 304.8170304000014
+    "load_seconds": 68.85998929999914,
+    "quality_seconds": 17.166487900001812,
+    "anomaly_seconds": 0.7234576999981073,
+    "semantic_seconds": 183.31919050000215,
+    "scoring_seconds": 1.8081041000004916,
+    "split_seconds": 7.410363899998629,
+    "analysis_seconds": 279.46910240000216,
+    "report_seconds": 2.6485300000022107,
+    "total_seconds": 282.11763240000437
+  },
+  "provenance": {
+    "git_commit": "b6e07dbf8fef5f42e0be7a6269cb1d65fd444903",
+    "git_dirty": false,
+    "repository_root": "E:\\大学\\aiskill\\dataset-difficulty-skill",
+    "command": "scripts/analyze_dataset.py validation/.work/cifar10_test --labels validation/.work/cifar10_test/labels.csv --format csv --output validation/cifar10_test --config validation/config_cifar10_test.yaml --semantic-backend clip --clip-model validation/.work/clip_model --device cuda --verbose",
+    "config_path": "validation/config_cifar10_test.yaml"
+  },
+  "dataset": {
+    "root": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test",
+    "label_file": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test\\labels.csv",
+    "format": "csv",
+    "sample_count": 10000,
+    "scope": "all samples returned by the configured dataset loader"
   },
   "configuration": {
     "project": {
       "seed": 42,
-      "version": "0.2.0"
+      "version": "0.2.0",
+      "config_file": "validation/config_cifar10_test.yaml"
     },
     "data": {
       "format": "csv",
@@ -282,7 +299,7 @@
       },
       "cache": {
         "enabled": true,
-        "directory": ".work/clip_cifar_cache_v2"
+        "directory": ".work/clip_cifar_cache_v3"
       }
     },
     "difficulty": {
@@ -324,6 +341,7 @@
         "test": 0.15
       },
       "exclude_anomalies": true,
+      "include_statistical_only": true,
       "ensure_val_test_when_possible": true
     },
     "report": {
@@ -333,8 +351,10 @@
       "title": "CIFAR-10 Test Split Difficulty Report"
     }
   },
-  "warnings": [],
-  "generated_at_utc": "2026-11-11T12:10:44.560394+00:00",
+  "warnings": [
+    "420 statistical-only anomalies were retained as valid samples in scoring and splitting."
+  ],
+  "generated_at_utc": "2026-11-11T15:04:33.733446+00:00",
   "input_root": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test",
   "label_file": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test\\labels.csv",
   "output_directory": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\cifar10_test",

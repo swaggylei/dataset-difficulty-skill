@@ -366,6 +366,9 @@ def assign_splits(
             "duplicate_groups_spanning_splits"
         ],
         "leakage_risk": leakage,
+        "soft_statistical_anomalies": int(
+            frame["sample_status"].eq("Statistically_Unusual").sum()
+        ),
         "excluded_anomalies": int((frame["split"] == "excluded_anomaly").sum()),
         "strata": strata_summary,
         "warnings": warnings,

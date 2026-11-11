@@ -198,38 +198,38 @@
   "semantic_runtime": {
     "backend": "ClipFeatureExtractor",
     "requested_device": "cuda",
-    "device": "not_loaded",
+    "device": "cuda",
     "model_name": "validation/.work/clip_model",
     "model_source": "local_directory",
     "batch_size": 64,
-    "model_loaded": false,
+    "model_loaded": true,
     "cache_enabled": true,
     "eligible_sample_count": 9206,
-    "cache_hits": 9206,
-    "cache_misses": 0,
+    "cache_hits": 0,
+    "cache_misses": 9206,
     "failure_count": 0,
     "failure_sample_ids": [],
     "failure_errors": [],
-    "extract_seconds": 8.805753599997843,
-    "prepare_seconds": 0.0,
-    "metrics_seconds": 0.4717251000001852,
-    "semantic_seconds": 21.16419550000137,
-    "gpu_peak_allocated_mb": null,
-    "gpu_peak_reserved_mb": null
+    "extract_seconds": 83.80179909999788,
+    "prepare_seconds": 98.97968029999902,
+    "metrics_seconds": 0.4851849000006041,
+    "semantic_seconds": 183.31323879999763,
+    "gpu_peak_allocated_mb": 773.4541015625,
+    "gpu_peak_reserved_mb": 914.0
   },
   "performance": {
-    "load_seconds": 65.30085959999997,
-    "quality_seconds": 69.07930000000124,
-    "anomaly_seconds": 0.7461750999973447,
-    "semantic_seconds": 21.170010599998932,
-    "scoring_seconds": 1.8395267000014428,
-    "split_seconds": 7.03789119999783,
-    "analysis_seconds": 165.37073070000042,
-    "report_seconds": 3.842182299998967,
-    "total_seconds": 169.2129129999994
+    "load_seconds": 68.85998929999914,
+    "quality_seconds": 17.166487900001812,
+    "anomaly_seconds": 0.7234576999981073,
+    "semantic_seconds": 183.31919050000215,
+    "scoring_seconds": 1.8081041000004916,
+    "split_seconds": 7.410363899998629,
+    "analysis_seconds": 279.46910240000216,
+    "report_seconds": 2.6485300000022107,
+    "total_seconds": 282.11763240000437
   },
   "provenance": {
-    "git_commit": "4f01587b21c6e8bc775f903ddc40e6b6f422b16c",
+    "git_commit": "b6e07dbf8fef5f42e0be7a6269cb1d65fd444903",
     "git_dirty": false,
     "repository_root": "E:\\大学\\aiskill\\dataset-difficulty-skill",
     "command": "scripts/analyze_dataset.py validation/.work/cifar10_test --labels validation/.work/cifar10_test/labels.csv --format csv --output validation/cifar10_test --config validation/config_cifar10_test.yaml --semantic-backend clip --clip-model validation/.work/clip_model --device cuda --verbose",
@@ -299,7 +299,7 @@
       },
       "cache": {
         "enabled": true,
-        "directory": ".work/clip_cifar_cache_v2"
+        "directory": ".work/clip_cifar_cache_v3"
       }
     },
     "difficulty": {
@@ -354,7 +354,7 @@
   "warnings": [
     "420 statistical-only anomalies were retained as valid samples in scoring and splitting."
   ],
-  "generated_at_utc": "2026-11-11T14:57:03.604159+00:00",
+  "generated_at_utc": "2026-11-11T15:04:33.733446+00:00",
   "input_root": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test",
   "label_file": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test\\labels.csv",
   "output_directory": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\cifar10_test",

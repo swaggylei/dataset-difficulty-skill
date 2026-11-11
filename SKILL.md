@@ -120,6 +120,16 @@ If semantic fields are null, state that CLIP was unavailable or disabled.
 Do not infer or invent embeddings. Do not treat poor quality as semantic
 difficulty. Do not merge anomaly labels into Easy/Medium/Hard.
 
+Statistical-only anomalies are soft by default: preserve their anomaly flag
+but retain them in scoring and splitting as `Statistically_Unusual`. Hard
+integrity and quality anomalies remain excluded. Do not describe every
+statistical outlier as invalid data.
+
+For real validation claims, inspect `summary.json["provenance"]`,
+`summary.json["dataset"]`, and `summary.json["semantic_runtime"]`. Check the
+recorded Git commit, dirty state, command, config path, model source, batch,
+cache counts, failures, and device before claiming reproducibility.
+
 Label rarity is an independent dataset statistic with zero weight and zero
 contribution. Image entropy and frequency complexity are descriptive visual
 complexity, not evidence that a sample is harder. When

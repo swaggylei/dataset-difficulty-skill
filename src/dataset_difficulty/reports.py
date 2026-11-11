@@ -218,6 +218,7 @@ def _build_html(
         "difficulty_band",
         "difficulty_score",
         "difficulty_scope",
+        "sample_status",
         "anomaly_types",
         "split",
     ]
@@ -359,6 +360,7 @@ def write_reports(
         "split",
         "is_anomaly",
         "anomaly_types",
+        "sample_status",
     ]
     manifest_columns = [
         column for column in manifest_columns if column in result.samples.columns

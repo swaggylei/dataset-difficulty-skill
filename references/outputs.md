@@ -31,13 +31,15 @@ Paths and hashes are metadata only. Original files are never rewritten.
 Includes:
 
 - total, anomaly, scored, unscored, and semantic-available counts;
+- provenance: Git commit, dirty-at-start state, command, and config path;
+- dataset root, label file, format, sample count, and loader scope;
 - class counts;
 - difficulty-band counts;
 - anomaly reason counts;
 - split counts and diagnostics;
 - semantic backend;
 - semantic runtime: device, model, batch size, cache hits/misses, failures,
-  and CUDA peak allocated/reserved memory;
+  model source, prepare/extract timing, and CUDA peak allocated/reserved memory;
 - stage timings and total analysis/report time;
 - the fully resolved analysis configuration;
 - warnings and limitations;
@@ -76,7 +78,8 @@ Minimal split manifest:
 `difficulty_score`, visual/semantic contributions, `difficulty_scope`,
 `component_coverage`, `split`, `is_anomaly`, `anomaly_types`.
 
-Anomalies use `split=excluded_anomaly` when exclusion is enabled.
+Hard anomalies use `split=excluded_anomaly`. Statistical-only soft anomalies
+retain their normal split when `split.include_statistical_only=true`.
 
 ## `split_summary.json`
 

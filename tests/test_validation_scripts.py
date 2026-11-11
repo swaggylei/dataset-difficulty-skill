@@ -60,7 +60,16 @@ def test_compare_v1_v2_recomputes_scores_and_band_transitions(
         {
             "sample_id": sample_ids,
             "label": ["cat"] * 2 + ["dog"] * 6,
-            "sample_status": ["Scored"] * 8,
+            "sample_status": [
+                "Scored",
+                "Scored",
+                "Scored",
+                "Statistically_Unusual",
+                "Scored",
+                "Scored",
+                "Scored",
+                "Scored",
+            ],
             "difficulty_score": np.linspace(0.1, 0.8, 8),
             "difficulty_band": ["Easy", "Easy", "Medium", "Medium", "Medium", "Hard", "Hard", "Hard"],
             "blur_laplacian_var": [80, 70, 60, 50, 40, 30, 20, 10],

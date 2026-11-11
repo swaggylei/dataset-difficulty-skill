@@ -124,6 +124,8 @@ These absolute thresholds produce `quality_issue_flags`.
 
 - `ratios.train`, `ratios.val`, `ratios.test`.
 - `exclude_anomalies`: default true.
+- `include_statistical_only`: default true; pure statistical outliers are
+  scored and split as soft anomalies.
 - `ensure_val_test_when_possible`: assigns Val and Test to strata of size at
   least three.
 - Non-empty `group_id` values switch to whole-group allocation automatically.

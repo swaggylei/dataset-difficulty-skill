@@ -158,8 +158,14 @@ No vector entropy is treated as a probability distribution.
 
 The final prior combines visual accessibility and semantic complexity, and
 records configured weights, effective weights, contributions, and component
-coverage. Label rarity is reported but contributes zero. Anomalies receive
-`difficulty_band=Anomaly` and are excluded from the split by default.
+coverage. Label rarity is reported but contributes zero.
+
+Hard anomalies such as corrupt, empty-label, conflicting-label, duplicate,
+undersized, or quality-flagged samples receive `difficulty_band=Anomaly` and
+are excluded from the split by default. Statistical-only anomalies are kept
+as `Statistically_Unusual` soft anomalies by default: their flag remains in
+the audit outputs, but they participate in difficulty scoring and splitting.
+Set `split.include_statistical_only: false` to restore hard exclusion.
 
 When CLIP is unavailable, `difficulty_scope=visual_only` and the report states
 that the result is not a complete semantic difficulty assessment.
@@ -184,10 +190,14 @@ Real Transformers CLIP validation and CIFAR-10 results are recorded under
 - `validation/real_clip/`: CPU/GPU, cache-hit, and resume metadata.
 - `validation/cifar10_test/`: complete official CIFAR-10 test-split report.
 - `validation/before_after/`: V1/V2 score and band comparison.
+- `validation/anomaly_audit/`: deterministic 50-image anomaly review.
+- `validation/experiment_manifest.json`: source commit, config hash, model
+  source/hash, command, and dataset scope.
 
 The verified model is `openai/clip-vit-base-patch32` on an RTX 3060 Laptop
-GPU. The complete CIFAR-10 run processed 10,000 images with no CLIP extraction
-failures.
+GPU. The CIFAR-10 experiment uses the official 10,000-image test split, not
+the complete 60,000-image train+test dataset. It processed all 10,000 test
+images with no CLIP extraction failures.
 
 ## Safety
 

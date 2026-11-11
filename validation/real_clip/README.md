@@ -29,10 +29,11 @@ seconds isolate the actual embedding loop.
 
 ## Full CIFAR-10
 
-- Input: 10,000 test images; 9,206 non-anomalous samples embedded.
+- Input: 10,000 test images; 9,206 non-anomalous samples embedded; 420
+  statistical-only soft anomalies are included in scoring/splitting.
 - Batch size: 64.
-- First run: 304.82 s total; quality 78.79 s; semantic 146.05 s;
-  model preparation 50.43 s; embedding extraction 95.08 s.
+- First run: 282.12 s total; quality 17.17 s; semantic 183.32 s;
+  model preparation 98.98 s; embedding extraction 83.80 s.
 - Peak allocated VRAM: 773.45 MiB.
 - Peak reserved VRAM: 914.00 MiB.
 - Failures: 0.

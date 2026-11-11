@@ -70,9 +70,10 @@ Configured (`difficulty_*_weight`), effective normalized
 (`visual_contribution`, `semantic_contribution`) values remain in
 `samples.csv`. Contributions sum to `difficulty_score` for scored samples.
 
-`difficulty_scope` is `visual_semantic`, `visual_only`, or `anomaly`. A
-visual-only score is not a complete semantic difficulty assessment. Anomalies
-receive a null `difficulty_score` and `difficulty_band=Anomaly`.
+`difficulty_scope` is `visual_semantic` or `visual_only` for scored samples.
+Hard anomalies receive a null `difficulty_score` and `difficulty_band=Anomaly`.
+Statistical-only anomalies are retained as `Statistically_Unusual` and are
+scored by default.
 
 Default bands use the 33rd and 67th percentiles of scored samples:
 Easy, Medium, Hard. Percentile thresholds are dataset-relative.
@@ -91,6 +92,10 @@ Easy, Medium, Hard. Percentile thresholds are dataset-relative.
 Exact duplicates use content SHA-256. Near duplicates use an 8x8 average-hash
 Hamming distance, capped by `anomaly.near_duplicate.max_samples`.
 Statistical outliers use per-label median/MAD robust z-scores.
+
+By default, `split.include_statistical_only=true`: pure statistical outliers
+are soft anomalies, remain visible in anomaly reports, and enter the joint
+split. Set it to `false` to exclude them.
 
 ## Limits
 
