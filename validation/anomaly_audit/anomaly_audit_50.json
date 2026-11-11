@@ -1,0 +1,17 @@
+{
+  "total_anomalies": 794,
+  "sample_count": 50,
+  "seed": 20261111,
+  "category_counts_all_anomalies": {
+    "statistical_only": 420,
+    "low_quality_valid": 374
+  },
+  "sample_category_counts": {
+    "statistical_only": 33,
+    "low_quality_valid": 17
+  },
+  "reason_counts_all_anomalies": {
+    "quality_outlier": 374,
+    "statistical_outlier": 532
+  }
+}
