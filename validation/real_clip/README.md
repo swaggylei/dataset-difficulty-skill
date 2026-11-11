@@ -27,6 +27,18 @@ images. CPU and GPU extraction used separate caches.
 The first-run totals include one-time model/device initialization. Extraction
 seconds isolate the actual embedding loop.
 
+## Provenance
+
+- CIFAR-10 first extraction and CIFAR report: clean source commit
+  `b6e07db`, regenerated from the committed code at `d9f20bd`.
+- `cifar10_first_run.json` contains the real first extraction.
+- `cifar10_cache_hit.json` contains the subsequent full-cache report.
+- The older CPU/GPU small-run JSON files document real extraction but predate
+  the `provenance` field. They are not retroactively assigned a commit SHA.
+- The current full CIFAR provenance is recorded directly in
+  `validation/cifar10_test/summary.json` and
+  `validation/experiment_manifest.json`.
+
 ## Full CIFAR-10
 
 - Input: 10,000 test images; 9,206 non-anomalous samples embedded; 420

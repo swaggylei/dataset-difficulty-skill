@@ -138,6 +138,7 @@
         "No group_id or duplicate-group leakage detected."
       ]
     },
+    "soft_statistical_anomalies": 420,
     "excluded_anomalies": 374,
     "strata": [
       {
@@ -210,29 +211,29 @@
     "failure_count": 0,
     "failure_sample_ids": [],
     "failure_errors": [],
-    "extract_seconds": 8.805753599997843,
+    "extract_seconds": 9.793688300000213,
     "prepare_seconds": 0.0,
-    "metrics_seconds": 0.4717251000001852,
-    "semantic_seconds": 21.16419550000137,
+    "metrics_seconds": 0.47094259999721544,
+    "semantic_seconds": 97.12959570000021,
     "gpu_peak_allocated_mb": null,
     "gpu_peak_reserved_mb": null
   },
   "performance": {
-    "load_seconds": 65.30085959999997,
-    "quality_seconds": 69.07930000000124,
-    "anomaly_seconds": 0.7461750999973447,
-    "semantic_seconds": 21.170010599998932,
-    "scoring_seconds": 1.8395267000014428,
-    "split_seconds": 7.03789119999783,
-    "analysis_seconds": 165.37073070000042,
-    "report_seconds": 3.842182299998967,
-    "total_seconds": 169.2129129999994
+    "load_seconds": 70.3957760000012,
+    "quality_seconds": 37.9745957999985,
+    "anomaly_seconds": 0.7525277999993705,
+    "semantic_seconds": 97.13353920000009,
+    "scoring_seconds": 1.7697107999993023,
+    "split_seconds": 7.367398900001717,
+    "analysis_seconds": 215.62170659999902,
+    "report_seconds": 2.582019200002833,
+    "total_seconds": 218.20372580000185
   },
   "provenance": {
-    "git_commit": "4f01587b21c6e8bc775f903ddc40e6b6f422b16c",
+    "git_commit": "d9f20bd58591dbdb32c814a0b84f5d2076fa40c5",
     "git_dirty": false,
     "repository_root": "E:\\大学\\aiskill\\dataset-difficulty-skill",
-    "command": "scripts/analyze_dataset.py validation/.work/cifar10_test --labels validation/.work/cifar10_test/labels.csv --format csv --output validation/cifar10_test --config validation/config_cifar10_test.yaml --semantic-backend clip --clip-model validation/.work/clip_model --device cuda --verbose",
+    "command": "scripts/analyze_dataset.py validation/.work/cifar10_test --labels validation/.work/cifar10_test/labels.csv --format csv --output validation/cifar10_test --config validation/config_cifar10_test.yaml --semantic-backend clip --clip-model validation/.work/clip_model --device cuda",
     "config_path": "validation/config_cifar10_test.yaml"
   },
   "dataset": {
@@ -299,7 +300,7 @@
       },
       "cache": {
         "enabled": true,
-        "directory": ".work/clip_cifar_cache_v2"
+        "directory": ".work/clip_cifar_cache_v3"
       }
     },
     "difficulty": {
@@ -354,7 +355,7 @@
   "warnings": [
     "420 statistical-only anomalies were retained as valid samples in scoring and splitting."
   ],
-  "generated_at_utc": "2026-11-11T14:57:03.604159+00:00",
+  "generated_at_utc": "2026-11-11T15:12:59.914096+00:00",
   "input_root": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test",
   "label_file": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test\\labels.csv",
   "output_directory": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\cifar10_test",

@@ -100,6 +100,7 @@
       "No group_id or duplicate-group leakage detected."
     ]
   },
+  "soft_statistical_anomalies": 420,
   "excluded_anomalies": 374,
   "strata": [
     {

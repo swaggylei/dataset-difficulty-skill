@@ -138,6 +138,7 @@
         "No group_id or duplicate-group leakage detected."
       ]
     },
+    "soft_statistical_anomalies": 420,
     "excluded_anomalies": 374,
     "strata": [
       {
@@ -198,41 +199,41 @@
   "semantic_runtime": {
     "backend": "ClipFeatureExtractor",
     "requested_device": "cuda",
-    "device": "cuda",
+    "device": "not_loaded",
     "model_name": "validation/.work/clip_model",
     "model_source": "local_directory",
     "batch_size": 64,
-    "model_loaded": true,
+    "model_loaded": false,
     "cache_enabled": true,
     "eligible_sample_count": 9206,
-    "cache_hits": 0,
-    "cache_misses": 9206,
+    "cache_hits": 9206,
+    "cache_misses": 0,
     "failure_count": 0,
     "failure_sample_ids": [],
     "failure_errors": [],
-    "extract_seconds": 83.80179909999788,
-    "prepare_seconds": 98.97968029999902,
-    "metrics_seconds": 0.4851849000006041,
-    "semantic_seconds": 183.31323879999763,
-    "gpu_peak_allocated_mb": 773.4541015625,
-    "gpu_peak_reserved_mb": 914.0
+    "extract_seconds": 9.793688300000213,
+    "prepare_seconds": 0.0,
+    "metrics_seconds": 0.47094259999721544,
+    "semantic_seconds": 97.12959570000021,
+    "gpu_peak_allocated_mb": null,
+    "gpu_peak_reserved_mb": null
   },
   "performance": {
-    "load_seconds": 68.85998929999914,
-    "quality_seconds": 17.166487900001812,
-    "anomaly_seconds": 0.7234576999981073,
-    "semantic_seconds": 183.31919050000215,
-    "scoring_seconds": 1.8081041000004916,
-    "split_seconds": 7.410363899998629,
-    "analysis_seconds": 279.46910240000216,
-    "report_seconds": 2.6485300000022107,
-    "total_seconds": 282.11763240000437
+    "load_seconds": 70.3957760000012,
+    "quality_seconds": 37.9745957999985,
+    "anomaly_seconds": 0.7525277999993705,
+    "semantic_seconds": 97.13353920000009,
+    "scoring_seconds": 1.7697107999993023,
+    "split_seconds": 7.367398900001717,
+    "analysis_seconds": 215.62170659999902,
+    "report_seconds": 2.582019200002833,
+    "total_seconds": 218.20372580000185
   },
   "provenance": {
-    "git_commit": "b6e07dbf8fef5f42e0be7a6269cb1d65fd444903",
+    "git_commit": "d9f20bd58591dbdb32c814a0b84f5d2076fa40c5",
     "git_dirty": false,
     "repository_root": "E:\\大学\\aiskill\\dataset-difficulty-skill",
-    "command": "scripts/analyze_dataset.py validation/.work/cifar10_test --labels validation/.work/cifar10_test/labels.csv --format csv --output validation/cifar10_test --config validation/config_cifar10_test.yaml --semantic-backend clip --clip-model validation/.work/clip_model --device cuda --verbose",
+    "command": "scripts/analyze_dataset.py validation/.work/cifar10_test --labels validation/.work/cifar10_test/labels.csv --format csv --output validation/cifar10_test --config validation/config_cifar10_test.yaml --semantic-backend clip --clip-model validation/.work/clip_model --device cuda",
     "config_path": "validation/config_cifar10_test.yaml"
   },
   "dataset": {
@@ -354,7 +355,7 @@
   "warnings": [
     "420 statistical-only anomalies were retained as valid samples in scoring and splitting."
   ],
-  "generated_at_utc": "2026-11-11T15:04:33.733446+00:00",
+  "generated_at_utc": "2026-11-11T15:12:59.914096+00:00",
   "input_root": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test",
   "label_file": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test\\labels.csv",
   "output_directory": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\cifar10_test",
