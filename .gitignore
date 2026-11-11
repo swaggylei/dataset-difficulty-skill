@@ -10,3 +10,5 @@ build/
 .wheel_tmp/
 *.egg-info/
 .dataset_difficulty_cache/
+.superpowers/
+validation/.work/

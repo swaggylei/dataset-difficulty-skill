@@ -81,6 +81,8 @@ def test_pipeline_without_semantics_keeps_metrics_null(tmp_path: Path) -> None:
     assert not result.samples["semantic_available"].any()
     assert result.samples["semantic_complexity"].isna().all()
     assert any("semantic" in warning.lower() for warning in result.warnings)
+    assert any("visual-only" in warning.lower() for warning in result.warnings)
+    assert result.summary["difficulty_scope"] == "visual_only"
     assert pd.isna(result.samples["semantic_complexity"]).all()
 
 
@@ -146,7 +148,7 @@ def test_summary_contains_resolved_configuration(tmp_path: Path) -> None:
         semantic_backend="disabled",
     )
 
-    assert result.summary["configuration"]["difficulty"]["weights"]["semantic"] == 0.60
+    assert result.summary["configuration"]["difficulty"]["weights"]["semantic"] == 0.70
 
 
 def test_semantic_analysis_skips_anomaly_images(tmp_path: Path) -> None:

@@ -49,6 +49,30 @@ def _weighted_available(
     return score, coverage
 
 
+def _component_contributions(
+    frame: pd.DataFrame,
+    components: list[tuple[str, float]],
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series]:
+    effective = pd.DataFrame(index=frame.index, dtype=float)
+    contributions = pd.DataFrame(index=frame.index, dtype=float)
+    available_weight = pd.Series(0.0, index=frame.index)
+    total_weight = sum(weight for _, weight in components)
+    for column, weight in components:
+        available_weight.loc[frame[column].notna()] += weight
+        effective[column] = 0.0
+        contributions[column] = 0.0
+    for column, weight in components:
+        valid = frame[column].notna() & (available_weight > 0)
+        effective.loc[valid, column] = weight / available_weight.loc[valid]
+        contributions.loc[valid, column] = (
+            frame.loc[valid, column] * effective.loc[valid, column]
+        )
+    coverage = (
+        available_weight / total_weight if total_weight > 0 else available_weight
+    )
+    return effective, contributions, coverage
+
+
 def _assign_bands(
     scores: pd.Series,
     config: dict[str, Any],
@@ -128,9 +152,21 @@ def score_difficulty(
         "contrast_component",
         "frequency_complexity_component",
         "entropy_component",
+        "visual_complexity_score",
+        "visual_accessibility_risk",
         "visual_difficulty_component",
         "visual_component_coverage",
         "label_rarity_score",
+        "label_rarity_weight",
+        "label_rarity_contribution",
+        "difficulty_visual_component",
+        "difficulty_visual_weight",
+        "difficulty_visual_effective_weight",
+        "visual_contribution",
+        "difficulty_semantic_component",
+        "difficulty_semantic_weight",
+        "difficulty_semantic_effective_weight",
+        "semantic_contribution",
         "semantic_difficulty_component",
         "difficulty_score",
         "component_coverage",
@@ -154,22 +190,44 @@ def score_difficulty(
     frame.loc[eligible, "entropy_component"] = _percentile(
         frame.loc[eligible, "image_entropy"]
     )
+    visual_complexity_weights = config.get("difficulty", {}).get(
+        "visual_complexity_weights", {}
+    )
+    complexity_frame = frame.loc[eligible].copy()
+    complexity_frame["spectral_entropy_component"] = _percentile(
+        complexity_frame["spectral_entropy"]
+    )
+    complexity_frame["high_frequency_component"] = _percentile(
+        complexity_frame["high_freq_energy_ratio"]
+    )
+    complexity_specifications = [
+        ("entropy_component", float(visual_complexity_weights.get("image_entropy", 0.34))),
+        (
+            "spectral_entropy_component",
+            float(visual_complexity_weights.get("spectral_entropy", 0.33)),
+        ),
+        (
+            "high_frequency_component",
+            float(visual_complexity_weights.get("high_frequency", 0.33)),
+        ),
+    ]
+    complexity_score, _ = _weighted_available(
+        complexity_frame, complexity_specifications
+    )
+    frame.loc[eligible, "visual_complexity_score"] = complexity_score.clip(0.0, 1.0)
 
     visual_weights = config.get("difficulty", {}).get("visual_weights", {})
     visual_specifications = [
-        ("blur_component", float(visual_weights.get("blur", 0.30))),
-        ("brightness_component", float(visual_weights.get("brightness", 0.15))),
-        ("contrast_component", float(visual_weights.get("contrast", 0.15))),
-        (
-            "frequency_complexity_component",
-            float(visual_weights.get("frequency", 0.15)),
-        ),
-        ("entropy_component", float(visual_weights.get("entropy", 0.25))),
+        ("blur_component", float(visual_weights.get("blur", 0.50))),
+        ("brightness_component", float(visual_weights.get("brightness", 0.20))),
+        ("contrast_component", float(visual_weights.get("contrast", 0.30))),
     ]
     visual_score, visual_coverage = _weighted_available(
         frame.loc[eligible], visual_specifications
     )
+    frame.loc[eligible, "visual_accessibility_risk"] = visual_score.clip(0.0, 1.0)
     frame.loc[eligible, "visual_difficulty_component"] = visual_score.clip(0.0, 1.0)
+    frame.loc[eligible, "difficulty_visual_component"] = visual_score.clip(0.0, 1.0)
     frame.loc[eligible, "visual_component_coverage"] = visual_coverage
 
     issue_counts = frame["quality_issue_flags"].map(
@@ -188,24 +246,59 @@ def score_difficulty(
         if label and np.isfinite(maximum_count) and maximum_count > 0:
             frame.loc[index, "label_rarity_score"] = 1.0 - float(count) / maximum_count
 
-    frame.loc[eligible, "semantic_difficulty_component"] = np.where(
+    frame.loc[eligible, "difficulty_semantic_component"] = np.where(
         frame.loc[eligible, "semantic_available"],
         frame.loc[eligible, "semantic_complexity"].clip(0.0, 1.0),
         np.nan,
     )
-    weights = config.get("difficulty", {}).get("weights", {})
-    main_specifications = [
-        ("visual_difficulty_component", float(weights.get("visual", 0.20))),
-        ("semantic_difficulty_component", float(weights.get("semantic", 0.60))),
-        ("label_rarity_score", float(weights.get("label", 0.20))),
+    frame.loc[eligible, "semantic_difficulty_component"] = frame.loc[
+        eligible, "difficulty_semantic_component"
     ]
-    difficulty, coverage = _weighted_available(
+    frame.loc[eligible, "label_rarity_weight"] = 0.0
+    frame.loc[eligible, "label_rarity_contribution"] = 0.0
+    frame["label_rarity_in_difficulty"] = False
+
+    weights = config.get("difficulty", {}).get("weights", {})
+    visual_weight = float(weights.get("visual", 0.30))
+    semantic_weight = float(weights.get("semantic", 0.70))
+    main_specifications = [
+        ("difficulty_visual_component", visual_weight),
+        ("difficulty_semantic_component", semantic_weight),
+    ]
+    effective, contributions, coverage = _component_contributions(
         frame.loc[eligible], main_specifications
     )
-    frame.loc[eligible, "difficulty_score"] = difficulty.clip(0.0, 1.0)
+    frame.loc[eligible, "difficulty_visual_weight"] = visual_weight
+    frame.loc[eligible, "difficulty_semantic_weight"] = semantic_weight
+    frame.loc[eligible, "difficulty_visual_effective_weight"] = effective[
+        "difficulty_visual_component"
+    ]
+    frame.loc[eligible, "difficulty_semantic_effective_weight"] = effective[
+        "difficulty_semantic_component"
+    ]
+    frame.loc[eligible, "visual_contribution"] = contributions[
+        "difficulty_visual_component"
+    ]
+    frame.loc[eligible, "semantic_contribution"] = contributions[
+        "difficulty_semantic_component"
+    ]
+    frame.loc[eligible, "difficulty_score"] = (
+        frame.loc[eligible, "visual_contribution"]
+        + frame.loc[eligible, "semantic_contribution"]
+    ).clip(0.0, 1.0)
     frame.loc[eligible, "component_coverage"] = coverage
     frame.loc[anomaly_mask, "component_coverage"] = 0.0
 
+    frame.loc[eligible, "difficulty_scope"] = np.where(
+        frame.loc[eligible, "difficulty_semantic_component"].notna(),
+        "visual_semantic",
+        np.where(
+            frame.loc[eligible, "difficulty_visual_component"].notna(),
+            "visual_only",
+            "unscored",
+        ),
+    )
+    frame.loc[anomaly_mask, "difficulty_scope"] = "anomaly"
     frame["difficulty_band"] = _assign_bands(frame["difficulty_score"], config)
     frame.loc[anomaly_mask, "difficulty_band"] = "Anomaly"
     frame["sample_status"] = np.select(

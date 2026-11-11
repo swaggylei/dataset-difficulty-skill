@@ -276,6 +276,31 @@ def _build_summary(
     band_counts = samples["difficulty_band"].value_counts().to_dict()
     split_counts = samples["split"].value_counts().to_dict()
     class_counts = samples["label"].fillna("").replace("", "<empty>").value_counts()
+    scored = samples[samples["sample_status"].eq("Scored")]
+    scope_counts = scored["difficulty_scope"].value_counts().to_dict()
+    scored_scopes = set(scope_counts)
+    if not scored_scopes:
+        difficulty_scope = "unscored"
+    elif scored_scopes == {"visual_semantic"}:
+        difficulty_scope = "visual_semantic"
+    elif scored_scopes == {"visual_only"}:
+        difficulty_scope = "visual_only"
+    else:
+        difficulty_scope = "mixed"
+    interpretations = {
+        "visual_semantic": (
+            "Composite prior uses visual accessibility and CLIP semantic components."
+        ),
+        "visual_only": (
+            "Visual-only prior: CLIP semantics were unavailable, so this score "
+            "does not represent complete semantic difficulty."
+        ),
+        "mixed": (
+            "Some scored samples include CLIP semantics and others are visual-only; "
+            "consult difficulty_scope per row."
+        ),
+        "unscored": "No non-anomalous sample received a difficulty prior.",
+    }
     return {
         "counts": {
             "total": int(len(samples)),
@@ -297,6 +322,11 @@ def _build_summary(
         ),
         "split_diagnostics": split_summary,
         "semantic_backend": semantic_backend,
+        "difficulty_scope": difficulty_scope,
+        "difficulty_scopes": {
+            str(key): int(value) for key, value in scope_counts.items()
+        },
+        "score_interpretation": interpretations[difficulty_scope],
         "configuration": config,
         "warnings": warnings,
     }
@@ -362,6 +392,12 @@ def analyze_dataset(
         semantic_backend=semantic_backend,
     )
     scored = score_difficulty(anomalous, quality, semantic, config)
+    scored_rows = scored["sample_status"].eq("Scored")
+    if scored_rows.any() and not scored.loc[scored_rows, "semantic_available"].any():
+        semantic_warnings.append(
+            "Difficulty score is visual-only because CLIP semantics are unavailable; "
+            "it is not a complete semantic difficulty assessment."
+        )
     split_config = config.get("split", {})
     split_result = assign_splits(
         scored,

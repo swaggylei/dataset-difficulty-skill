@@ -191,10 +191,21 @@ def _build_html(
         "sample_id",
         "rel_path",
         "label",
+        "blur_laplacian_var",
+        "brightness",
+        "contrast",
+        "image_entropy",
+        "spectral_entropy",
+        "high_freq_energy_ratio",
+        "visual_quality_risk",
+        "visual_complexity_score",
+        "visual_accessibility_risk",
+        "visual_contribution",
+        "semantic_complexity",
+        "semantic_contribution",
         "difficulty_band",
         "difficulty_score",
-        "component_coverage",
-        "semantic_complexity",
+        "difficulty_scope",
         "anomaly_types",
         "split",
     ]
@@ -236,10 +247,22 @@ def _build_html(
   <header>
     <h1>{html.escape(title)}</h1>
     <p class="note">Training-free relative difficulty prior. Scores are not
-    accuracy predictions. Anomalies are listed separately from Easy, Medium,
-    and Hard bands.</p>
+    accuracy predictions. Label rarity is reported independently and does not
+    affect the composite score. Anomalies are listed separately from Easy,
+    Medium, and Hard bands.</p>
   </header>
   <section><h2>Dataset Counts</h2><div class="metrics">{count_items}</div></section>
+  <section>
+    <h2>Score Interpretation</h2>
+    <p class="note"><strong>{html.escape(str(summary.get("difficulty_scope", "unscored")))}</strong>:
+    {html.escape(str(summary.get("score_interpretation", "")))}</p>
+    <p class="note">Image entropy and frequency complexity are descriptive
+    visual-complexity signals represented by visual_complexity_score. They are
+    not assumed to imply higher task difficulty and do not contribute to the
+    composite score. Image quality, visual accessibility risk, semantic
+    complexity, and the final prior are shown separately. When CLIP is
+    unavailable, the report is visual-only.</p>
+  </section>
   <section>
     <h2>Difficulty Bands</h2>
     <p class="note">{html.escape(json.dumps(_sanitize(bands), ensure_ascii=False))}</p>
@@ -307,6 +330,12 @@ def write_reports(
         "label",
         "difficulty_band",
         "difficulty_score",
+        "visual_contribution",
+        "semantic_contribution",
+        "difficulty_scope",
+        "label_rarity_score",
+        "label_rarity_contribution",
+        "group_id",
         "component_coverage",
         "split",
         "is_anomaly",
@@ -363,7 +392,9 @@ def write_reports(
             "artifacts": artifact_names,
             "limitations": [
                 "Difficulty scores are dataset-relative priors, not predicted accuracy.",
-                "Quality issues are not equivalent to semantic difficulty.",
+                "Quality issues and visual complexity are not equivalent to task difficulty.",
+                "Label rarity is an independent dataset statistic and contributes zero.",
+                "Visual-only scores do not represent complete semantic difficulty.",
                 "Unavailable metrics remain null and are excluded from weighted scores.",
             ],
         }

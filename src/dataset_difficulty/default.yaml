@@ -51,15 +51,16 @@ semantic:
 
 difficulty:
   weights:
-    visual: 0.20
-    semantic: 0.60
-    label: 0.20
+    visual: 0.30
+    semantic: 0.70
   visual_weights:
-    blur: 0.30
-    brightness: 0.15
-    contrast: 0.15
-    frequency: 0.15
-    entropy: 0.25
+    blur: 0.50
+    brightness: 0.20
+    contrast: 0.30
+  visual_complexity_weights:
+    image_entropy: 0.34
+    spectral_entropy: 0.33
+    high_frequency: 0.33
   semantic_weights:
     outlier: 0.40
     confusion: 0.40

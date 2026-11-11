@@ -69,6 +69,9 @@ def test_reports_write_required_artifacts_and_valid_json(tmp_path: Path) -> None
     html = (output / "report.html").read_text(encoding="utf-8")
     assert "sample-a" in html
     assert "hard_samples.png" in html
+    assert "visual_complexity_score" in html
+    assert "Image entropy and frequency complexity are descriptive" in html
+    assert "visual-only" in html.lower()
     assert (output / "hard_samples.png").stat().st_size > 500
 
 

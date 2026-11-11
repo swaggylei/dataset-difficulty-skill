@@ -213,3 +213,102 @@ def test_anomalies_do_not_change_clean_sample_components_or_bands() -> None:
     assert clean_result["difficulty_band"].tolist() == clean_from_all[
         "difficulty_band"
     ].tolist()
+
+
+def test_label_rarity_does_not_change_difficulty_score() -> None:
+    sample_ids = [f"s{index}" for index in range(6)]
+    samples = pd.DataFrame(
+        {
+            "sample_id": sample_ids,
+            "label": ["rare"] * 2 + ["common"] * 4,
+            "path": [f"/tmp/{sample_id}.png" for sample_id in sample_ids],
+            "rel_path": [f"{sample_id}.png" for sample_id in sample_ids],
+            "is_anomaly": [False] * 6,
+            "anomaly_types": [""] * 6,
+        }
+    )
+    quality = pd.DataFrame(
+        {
+            "sample_id": sample_ids,
+            "blur_laplacian_var": [20.0] * 6,
+            "brightness": [0.5] * 6,
+            "contrast": [0.2] * 6,
+            "spectral_entropy": [0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
+            "high_freq_energy_ratio": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6],
+            "image_entropy": [2.0, 3.0, 4.0, 5.0, 6.0, 7.0],
+            "quality_issue_flags": [""] * 6,
+        }
+    )
+    semantic = pd.DataFrame(
+        {
+            "sample_id": sample_ids,
+            "semantic_available": [True] * 6,
+            "semantic_complexity": [0.5] * 6,
+            "semantic_component_coverage": [1.0] * 6,
+        }
+    )
+
+    result = score_difficulty(samples, quality, semantic, load_config())
+
+    assert result["label_rarity_score"].max() > 0
+    assert result["difficulty_score"].nunique() == 1
+    assert (result["label_rarity_in_difficulty"] == False).all()
+    assert np.allclose(result["label_rarity_contribution"], 0.0)
+
+
+def test_entropy_and_frequency_do_not_change_composite_score() -> None:
+    sample_ids = [f"s{index}" for index in range(5)]
+    samples = pd.DataFrame(
+        {
+            "sample_id": sample_ids,
+            "label": ["cat"] * 5,
+            "path": [f"/tmp/{sample_id}.png" for sample_id in sample_ids],
+            "rel_path": [f"{sample_id}.png" for sample_id in sample_ids],
+            "is_anomaly": [False] * 5,
+            "anomaly_types": [""] * 5,
+        }
+    )
+    quality = pd.DataFrame(
+        {
+            "sample_id": sample_ids,
+            "blur_laplacian_var": [30.0] * 5,
+            "brightness": [0.5] * 5,
+            "contrast": [0.2] * 5,
+            "spectral_entropy": [0.1, 0.3, 0.5, 0.7, 0.9],
+            "high_freq_energy_ratio": [0.05, 0.1, 0.2, 0.4, 0.8],
+            "image_entropy": [1.0, 3.0, 5.0, 6.0, 7.5],
+            "quality_issue_flags": [""] * 5,
+        }
+    )
+    semantic = pd.DataFrame(
+        {
+            "sample_id": sample_ids,
+            "semantic_available": [True] * 5,
+            "semantic_complexity": [0.4] * 5,
+            "semantic_component_coverage": [1.0] * 5,
+        }
+    )
+
+    result = score_difficulty(samples, quality, semantic, load_config())
+
+    assert result["difficulty_score"].nunique() == 1
+    assert result["visual_complexity_score"].nunique() > 1
+
+
+def test_contributions_sum_to_score_and_effective_weights_are_explicit() -> None:
+    samples, quality, semantic = _inputs()
+
+    result = score_difficulty(samples, quality, semantic, load_config())
+    scored = result[result["sample_status"] == "Scored"]
+    expected = scored["visual_contribution"] + scored["semantic_contribution"]
+
+    assert np.allclose(scored["difficulty_score"], expected)
+    assert (
+        scored["difficulty_visual_effective_weight"]
+        + scored.dropna(subset=["difficulty_semantic_component"])[
+            "difficulty_semantic_effective_weight"
+        ]
+    ).dropna().round(8).eq(1.0).all()
+    assert {"visual_semantic", "visual_only"}.issubset(
+        set(result["difficulty_scope"])
+    )
