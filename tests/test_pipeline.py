@@ -30,6 +30,19 @@ class TintedFakeExtractor:
         return np.asarray(vectors)
 
 
+class FailingOneExtractor(TintedFakeExtractor):
+    signature = "failing-one-v1"
+
+    def encode_images(self, images: Sequence[Image.Image]) -> np.ndarray:
+        if any(
+            np.asarray(image.convert("RGB")).mean(axis=(0, 1))[0]
+            > 1.5 * np.asarray(image.convert("RGB")).mean(axis=(0, 1))[2]
+            for image in images
+        ):
+            raise RuntimeError("synthetic encoder failure for bright image")
+        return super().encode_images(images)
+
+
 def _write_classification_dataset(root: Path) -> None:
     rng = np.random.default_rng(21)
     for class_name, tint in (("cat", (1.0, 0.4, 0.3)), ("dog", (0.2, 0.4, 1.0))):
@@ -177,7 +190,7 @@ def test_semantic_analysis_skips_anomaly_images(tmp_path: Path) -> None:
         }
     )
 
-    semantic, _, _ = _semantic_analysis(
+    semantic, _, _, runtime = _semantic_analysis(
         samples,
         config,
         tmp_path / "output",
@@ -187,6 +200,8 @@ def test_semantic_analysis_skips_anomaly_images(tmp_path: Path) -> None:
 
     assert extractor.calls == 4
     assert not semantic.loc[semantic["sample_id"] == "b", "semantic_available"].iloc[0]
+    assert runtime["cache_hits"] == 0
+    assert runtime["cache_misses"] == 2
 
 
 def test_preflight_skips_unreadable_image_and_reaches_next(
@@ -221,3 +236,47 @@ def test_pipeline_warns_when_near_duplicate_comparison_is_skipped(
     )
 
     assert any("near-duplicate" in warning.lower() for warning in result.warnings)
+
+
+def test_pipeline_summary_records_runtime_cache_and_failure_ids(
+    tmp_path: Path,
+) -> None:
+    root = tmp_path / "dataset"
+    _write_classification_dataset(root)
+    config = load_config(
+        overrides={
+            "semantic": {
+                "clip": {"augmentations": 0, "batch_size": 2},
+                "cache": {"enabled": False},
+                "min_class_samples": 2,
+            },
+            "anomaly": {"near_duplicate": {"enabled": False}},
+        }
+    )
+
+    result = analyze_dataset(
+        root,
+        tmp_path / "output",
+        config,
+        extractor=FailingOneExtractor(),
+        semantic_backend="fake",
+    )
+
+    performance = result.summary["performance"]
+    runtime = result.summary["semantic_runtime"]
+    assert {
+        "quality_seconds",
+        "semantic_seconds",
+        "scoring_seconds",
+        "split_seconds",
+        "analysis_seconds",
+        "report_seconds",
+        "total_seconds",
+    }.issubset(performance)
+    assert runtime["batch_size"] == 2
+    assert runtime["cache_hits"] == 0
+    assert runtime["cache_misses"] == runtime["eligible_sample_count"]
+    assert runtime["eligible_sample_count"] > 0
+    assert runtime["failure_count"] > 0
+    assert runtime["failure_sample_ids"]
+    assert runtime["device"] in {"cpu", "cuda", "not_loaded"}

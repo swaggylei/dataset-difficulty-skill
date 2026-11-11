@@ -77,7 +77,7 @@ def compute_semantic_metrics(
         norm = float(np.linalg.norm(centroid))
         if norm > np.finfo(float).eps:
             centroid_by_label[label] = centroid / norm
-        if len(member_indices) >= minimum_class_size:
+        if len(member_indices) >= minimum_class_size and label in centroid_by_label:
             similarities = base_array[member_indices] @ centroid_by_label[label]
             centroid_distances[member_indices] = np.clip(1.0 - similarities, 0.0, 2.0)
 

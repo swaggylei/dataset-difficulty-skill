@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -101,6 +102,32 @@ def _empty_semantic(samples: pd.DataFrame) -> pd.DataFrame:
     )
 
 
+def _empty_semantic_runtime(
+    backend: str,
+    cache_enabled: bool,
+) -> dict[str, Any]:
+    return {
+        "backend": backend,
+        "requested_device": "not_loaded",
+        "device": "not_loaded",
+        "model_name": None,
+        "batch_size": None,
+        "model_loaded": False,
+        "cache_enabled": bool(cache_enabled),
+        "eligible_sample_count": 0,
+        "cache_hits": 0,
+        "cache_misses": 0,
+        "failure_count": 0,
+        "failure_sample_ids": [],
+        "failure_errors": [],
+        "extract_seconds": 0.0,
+        "metrics_seconds": 0.0,
+        "semantic_seconds": 0.0,
+        "gpu_peak_allocated_mb": None,
+        "gpu_peak_reserved_mb": None,
+    }
+
+
 def _preflight_extractor(
     extractor: FeatureExtractor,
     samples: pd.DataFrame,
@@ -149,14 +176,19 @@ def _semantic_analysis(
     output_dir: Path,
     extractor: FeatureExtractor | None,
     semantic_backend: str,
-) -> tuple[pd.DataFrame, str, list[str]]:
+) -> tuple[pd.DataFrame, str, list[str], dict[str, Any]]:
+    semantic_started = time.perf_counter()
     semantic_config = config.get("semantic", {})
     mode = semantic_backend.lower()
     if mode == "disabled" or not bool(semantic_config.get("enabled", True)):
+        cache_enabled = bool(
+            semantic_config.get("cache", {}).get("enabled", True)
+        )
         return (
             _empty_semantic(samples),
             "disabled",
             ["Semantic metrics are disabled; semantic fields remain null."],
+            _empty_semantic_runtime("disabled", cache_enabled),
         )
 
     warnings: list[str] = []
@@ -166,10 +198,14 @@ def _semantic_analysis(
     ).fillna(False).astype(bool)
     eligible_samples = samples[~anomaly_mask].reset_index(drop=True)
     if eligible_samples.empty:
+        cache_enabled = bool(
+            semantic_config.get("cache", {}).get("enabled", True)
+        )
         return (
             _empty_semantic(samples),
             "unavailable",
             ["Semantic metrics are unavailable because no non-anomalous samples remain."],
+            _empty_semantic_runtime("unavailable", cache_enabled),
         )
 
     active_extractor = extractor
@@ -217,7 +253,18 @@ def _semantic_analysis(
                     "CLIP could not be loaded from local files; semantic fields remain "
                     f"null ({type(error).__name__}: {error})."
                 ],
+                {
+                    **_empty_semantic_runtime(
+                        "unavailable",
+                        bool(cache_config.get("enabled", True)),
+                    ),
+                    "requested_device": getattr(active_extractor, "device", "unknown"),
+                    "model_name": getattr(active_extractor, "model_name", None),
+                    "batch_size": batch_size,
+                    "semantic_seconds": time.perf_counter() - semantic_started,
+                },
             )
+    extract_started = time.perf_counter()
     feature_result = extract_features(
         eligible_samples,
         extractor=active_extractor,
@@ -226,12 +273,15 @@ def _semantic_analysis(
         seed=seed,
         batch_size=batch_size,
     )
+    extract_seconds = time.perf_counter() - extract_started
+    metrics_started = time.perf_counter()
     eligible_semantic = compute_semantic_metrics(
         eligible_samples,
         feature_result.base,
         feature_result.augmented,
         config,
     )
+    metrics_seconds = time.perf_counter() - metrics_started
     semantic = _empty_semantic(samples)
     semantic_by_id = eligible_semantic.set_index("sample_id")
     for column in eligible_semantic.columns:
@@ -254,7 +304,45 @@ def _semantic_analysis(
             "samples."
         )
     backend_name = feature_result.backend
-    return semantic, backend_name, warnings
+    runtime = getattr(active_extractor, "runtime_info", lambda: {})()
+    failure_positions = [
+        position for position, error in enumerate(feature_result.errors) if error
+    ]
+    failure_sample_ids = (
+        eligible_samples.iloc[failure_positions]["sample_id"].astype(str).tolist()
+        if failure_positions
+        else []
+    )
+    semantic_runtime = {
+        **_empty_semantic_runtime(
+            backend_name,
+            bool(cache_config.get("enabled", True)),
+        ),
+        **runtime,
+        "backend": backend_name,
+        "requested_device": runtime.get(
+            "requested_device", getattr(active_extractor, "device", "unknown")
+        ),
+        "device": runtime.get("device", "not_loaded"),
+        "model_name": runtime.get(
+            "model_name", getattr(active_extractor, "model_name", None)
+        ),
+        "batch_size": batch_size,
+        "eligible_sample_count": int(len(eligible_samples)),
+        "cache_hits": int(feature_result.cache_hits.sum()),
+        "cache_misses": int(len(feature_result.cache_hits) - feature_result.cache_hits.sum()),
+        "failure_count": len(failure_positions),
+        "failure_sample_ids": failure_sample_ids,
+        "failure_errors": [
+            {"sample_id": str(eligible_samples.iloc[position]["sample_id"]), "error": error}
+            for position, error in enumerate(feature_result.errors)
+            if error
+        ],
+        "extract_seconds": float(extract_seconds),
+        "metrics_seconds": float(metrics_seconds),
+        "semantic_seconds": float(time.perf_counter() - semantic_started),
+    }
+    return semantic, backend_name, warnings, semantic_runtime
 
 
 def _count_anomaly_reasons(anomaly_types: pd.Series) -> dict[str, int]:
@@ -271,6 +359,8 @@ def _build_summary(
     warnings: list[str],
     semantic_backend: str,
     config: dict[str, Any],
+    semantic_runtime: dict[str, Any],
+    performance: dict[str, float],
 ) -> dict[str, Any]:
     status_counts = samples["sample_status"].value_counts().to_dict()
     band_counts = samples["difficulty_band"].value_counts().to_dict()
@@ -327,6 +417,8 @@ def _build_summary(
             str(key): int(value) for key, value in scope_counts.items()
         },
         "score_interpretation": interpretations[difficulty_scope],
+        "semantic_runtime": semantic_runtime,
+        "performance": performance,
         "configuration": config,
         "warnings": warnings,
     }
@@ -344,6 +436,7 @@ def analyze_dataset(
 
     root = Path(data_root).resolve()
     output = Path(output_dir).resolve()
+    analysis_started = time.perf_counter()
     data_config = config.get("data", {})
     cache_config = config.get("semantic", {}).get("cache", {})
     cache_value = Path(
@@ -363,6 +456,7 @@ def analyze_dataset(
     for ignored in data_config.get("ignore_dirs", []):
         exclusions.append(root / str(ignored))
 
+    load_started = time.perf_counter()
     loaded = load_dataset(
         root,
         label_file=resolved_label_file,
@@ -373,9 +467,14 @@ def analyze_dataset(
         group_column=str(data_config.get("group_column", "group_id")),
         exclude_paths=exclusions,
     )
+    load_seconds = time.perf_counter() - load_started
     LOGGER.info("Loaded %d samples", len(loaded.samples))
+    quality_started = time.perf_counter()
     quality = _quality_table(loaded.samples, config)
+    quality_seconds = time.perf_counter() - quality_started
+    anomaly_started = time.perf_counter()
     anomalous = detect_anomalies(loaded.samples, quality, config)
+    anomaly_seconds = time.perf_counter() - anomaly_started
     pipeline_warnings: list[str] = []
     if (
         "near_duplicate_status" in anomalous.columns
@@ -385,14 +484,18 @@ def analyze_dataset(
             "Near-duplicate comparison was skipped because the dataset exceeds "
             "anomaly.near_duplicate.max_samples."
         )
-    semantic, backend_name, semantic_warnings = _semantic_analysis(
+    semantic_started = time.perf_counter()
+    semantic, backend_name, semantic_warnings, semantic_runtime = _semantic_analysis(
         anomalous,
         config,
         output,
         extractor=extractor,
         semantic_backend=semantic_backend,
     )
+    semantic_seconds = time.perf_counter() - semantic_started
+    scoring_started = time.perf_counter()
     scored = score_difficulty(anomalous, quality, semantic, config)
+    scoring_seconds = time.perf_counter() - scoring_started
     scored_rows = scored["sample_status"].eq("Scored")
     if scored_rows.any() and not scored.loc[scored_rows, "semantic_available"].any():
         semantic_warnings.append(
@@ -400,6 +503,7 @@ def analyze_dataset(
             "it is not a complete semantic difficulty assessment."
         )
     split_config = config.get("split", {})
+    split_started = time.perf_counter()
     split_result = assign_splits(
         scored,
         ratios=split_config.get(
@@ -411,18 +515,30 @@ def analyze_dataset(
             split_config.get("ensure_val_test_when_possible", True)
         ),
     )
+    split_seconds = time.perf_counter() - split_started
     warnings = [
         *loaded.warnings,
         *pipeline_warnings,
         *semantic_warnings,
         *split_result.summary["warnings"],
     ]
+    performance = {
+        "load_seconds": float(load_seconds),
+        "quality_seconds": float(quality_seconds),
+        "anomaly_seconds": float(anomaly_seconds),
+        "semantic_seconds": float(semantic_seconds),
+        "scoring_seconds": float(scoring_seconds),
+        "split_seconds": float(split_seconds),
+        "analysis_seconds": float(time.perf_counter() - analysis_started),
+    }
     summary = _build_summary(
         split_result.assignment,
         split_result.summary,
         warnings,
         backend_name,
         config,
+        semantic_runtime,
+        performance,
     )
     result = AnalysisResult(
         samples=split_result.assignment,

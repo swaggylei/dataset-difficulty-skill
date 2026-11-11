@@ -3,6 +3,7 @@ from __future__ import annotations
 import html
 import json
 import math
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
@@ -315,6 +316,7 @@ def write_reports(
 ) -> dict[str, str]:
     """Write all required CSV, JSON, HTML, PNG, and split artifacts."""
 
+    report_started = time.perf_counter()
     output_path = Path(output_dir).resolve()
     input_root = getattr(result, "input_root", None)
     if input_root is not None:
@@ -406,11 +408,20 @@ def write_reports(
             ],
         }
     )
+    html_report = _build_html(result, _sanitize(summary))
+    performance = dict(result.summary.get("performance", {}))
+    report_seconds = float(time.perf_counter() - report_started)
+    performance["report_seconds"] = report_seconds
+    performance["total_seconds"] = float(
+        performance.get("analysis_seconds", 0.0) + report_seconds
+    )
+    summary["performance"] = performance
+    result.summary["performance"] = performance
     split_summary = _sanitize(result.split_summary)
     _write_json(output_path / "summary.json", summary)
     _write_json(output_path / "split_summary.json", split_summary)
     (output_path / "report.html").write_text(
-        _build_html(result, _sanitize(summary)),
+        html_report,
         encoding="utf-8",
     )
     return {name: str(output_path / name) for name in artifact_names}

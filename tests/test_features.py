@@ -202,3 +202,20 @@ def test_cache_load_ignores_bad_zipfile(
     monkeypatch.setattr(np, "load", raise_bad_zip)
 
     assert cache.load("abc") is None
+
+
+def test_clip_runtime_info_is_explicit_before_model_load(tmp_path: Path) -> None:
+    extractor = ClipFeatureExtractor(
+        model_name=str(tmp_path / "local-clip"),
+        device="cpu",
+        allow_download=False,
+        batch_size=8,
+    )
+
+    info = extractor.runtime_info()
+
+    assert info["requested_device"] == "cpu"
+    assert info["device"] == "not_loaded"
+    assert info["model_loaded"] is False
+    assert info["batch_size"] == 8
+    assert info["gpu_peak_allocated_mb"] is None

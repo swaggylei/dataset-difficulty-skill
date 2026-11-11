@@ -335,6 +335,23 @@ class ClipFeatureExtractor:
         mode = "download-allowed" if self.allow_download else "local-only"
         return f"clip:{self.model_name}:{mode}:v1"
 
+    def runtime_info(self) -> dict[str, Any]:
+        device = self._runtime_device or "not_loaded"
+        allocated_mb = None
+        reserved_mb = None
+        if self._torch is not None and str(device).startswith("cuda"):
+            allocated_mb = float(self._torch.cuda.max_memory_allocated() / (1024**2))
+            reserved_mb = float(self._torch.cuda.max_memory_reserved() / (1024**2))
+        return {
+            "requested_device": self.device,
+            "device": device,
+            "model_name": self.model_name,
+            "batch_size": self.batch_size,
+            "model_loaded": self._model is not None,
+            "gpu_peak_allocated_mb": allocated_mb,
+            "gpu_peak_reserved_mb": reserved_mb,
+        }
+
     def _load(self) -> None:
         if self._model is not None:
             return
@@ -350,6 +367,8 @@ class ClipFeatureExtractor:
             runtime_device = "cuda" if torch.cuda.is_available() else "cpu"
         else:
             runtime_device = self.device
+        if str(runtime_device).startswith("cuda"):
+            torch.cuda.reset_peak_memory_stats()
         local_only = not self.allow_download
         self._model = CLIPModel.from_pretrained(
             self.model_name,
