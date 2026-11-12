@@ -5,7 +5,7 @@ import json
 import pandas as pd
 import pytest
 
-from dataset_difficulty.splitting import assign_splits
+from dataset_difficulty.splitting import _leakage_diagnostics, assign_splits
 
 
 def _stratified_frame() -> pd.DataFrame:
@@ -146,3 +146,19 @@ def test_mixed_group_stays_intact() -> None:
     ]
     assert mixed_splits.nunique() == 1
     assert any("mixed" in warning.lower() for warning in result.summary["warnings"])
+
+
+def test_leakage_diagnostics_detects_intentional_group_crossing() -> None:
+    frame = pd.DataFrame(
+        {
+            "sample_id": ["a", "b", "c"],
+            "group_id": ["shared", "shared", "safe"],
+            "split": ["train", "test", "val"],
+        }
+    )
+
+    diagnostics = _leakage_diagnostics(frame)
+
+    assert diagnostics["groups_spanning_splits"] == 1
+    assert diagnostics["level"] == "high"
+    assert any("group_id" in message for message in diagnostics["messages"])

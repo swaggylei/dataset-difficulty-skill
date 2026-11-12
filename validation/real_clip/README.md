@@ -29,8 +29,8 @@ seconds isolate the actual embedding loop.
 
 ## Provenance
 
-- CIFAR-10 first extraction and CIFAR report: clean source commit
-  `b6e07db`, regenerated from the committed code at `d9f20bd`.
+- CIFAR-10 first extraction: clean source commit `b6e07db`; final report
+  regenerated from committed code at `54b3858`.
 - `cifar10_first_run.json` contains the real first extraction.
 - `cifar10_cache_hit.json` contains the subsequent full-cache report.
 - The older CPU/GPU small-run JSON files document real extraction but predate
@@ -41,8 +41,8 @@ seconds isolate the actual embedding loop.
 
 ## Full CIFAR-10
 
-- Input: 10,000 test images; 9,206 non-anomalous samples embedded; 420
-  statistical-only soft anomalies are included in scoring/splitting.
+- Input: 10,000 test images; 9,206 ordinary samples embedded plus 420
+  statistical-only and 374 quality-flagged soft anomalies.
 - Batch size: 64.
 - First run: 282.12 s total; quality 17.17 s; semantic 183.32 s;
   model preparation 98.98 s; embedding extraction 83.80 s.

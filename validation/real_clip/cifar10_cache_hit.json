@@ -2,22 +2,20 @@
   "counts": {
     "total": 10000,
     "anomalies": 794,
-    "scored": 9626,
+    "scored": 10000,
     "unscored": 0,
     "semantic_available": 9206,
     "semantic_embeddings": 9206
   },
   "difficulty_bands": {
-    "Medium": 3272,
-    "Hard": 3177,
-    "Easy": 3177,
-    "Anomaly": 374
+    "Medium": 3400,
+    "Hard": 3300,
+    "Easy": 3300
   },
   "splits": {
-    "train": 6739,
-    "val": 1444,
-    "test": 1443,
-    "excluded_anomaly": 374
+    "train": 7002,
+    "val": 1500,
+    "test": 1498
   },
   "classes": {
     "airplane": 1000,
@@ -35,7 +33,7 @@
     "quality_outlier": 374,
     "statistical_outlier": 532
   },
-  "mean_component_coverage": 0.9332,
+  "mean_component_coverage": 0.94442,
   "split_diagnostics": {
     "ratios": {
       "train": 0.7,
@@ -45,87 +43,71 @@
     "seed": 42,
     "exclude_anomalies": true,
     "split_mode": "group",
-    "group_count": 9626,
-    "split_unit_count": 9626,
+    "group_count": 10000,
+    "split_unit_count": 10000,
     "counts": {
-      "excluded_anomaly": 374,
-      "test": 1443,
-      "train": 6739,
-      "val": 1444
+      "test": 1498,
+      "train": 7002,
+      "val": 1500
     },
     "actual_scored_ratios": {
-      "train": 0.7000831082484936,
-      "val": 0.15001038853106172,
-      "test": 0.14990650322044463
+      "train": 0.7002,
+      "val": 0.15,
+      "test": 0.1498
     },
     "class_distribution": {
       "train": {
-        "dog": 696,
-        "frog": 694,
-        "horse": 693,
-        "cat": 692,
-        "automobile": 689,
-        "truck": 686,
-        "bird": 651,
-        "deer": 651,
-        "ship": 644,
-        "airplane": 643
-      },
-      "test": {
-        "dog": 149,
-        "horse": 149,
-        "cat": 148,
-        "frog": 148,
-        "automobile": 147,
-        "truck": 147,
-        "bird": 140,
-        "deer": 139,
-        "airplane": 138,
-        "ship": 138
-      },
-      "excluded_anomaly": {
-        "airplane": 82,
-        "ship": 80,
-        "bird": 70,
-        "deer": 70,
-        "truck": 20,
-        "automobile": 16,
-        "cat": 12,
-        "frog": 9,
-        "horse": 9,
-        "dog": 6
+        "automobile": 701,
+        "cat": 701,
+        "airplane": 700,
+        "bird": 700,
+        "deer": 700,
+        "dog": 700,
+        "frog": 700,
+        "horse": 700,
+        "ship": 700,
+        "truck": 700
       },
       "val": {
-        "dog": 149,
-        "frog": 149,
-        "horse": 149,
-        "automobile": 148,
-        "cat": 148,
-        "truck": 147,
-        "deer": 140,
-        "bird": 139,
-        "ship": 138,
-        "airplane": 137
+        "bird": 151,
+        "airplane": 150,
+        "automobile": 150,
+        "deer": 150,
+        "dog": 150,
+        "frog": 150,
+        "horse": 150,
+        "ship": 150,
+        "truck": 150,
+        "cat": 149
+      },
+      "test": {
+        "airplane": 150,
+        "cat": 150,
+        "deer": 150,
+        "dog": 150,
+        "frog": 150,
+        "horse": 150,
+        "ship": 150,
+        "truck": 150,
+        "automobile": 149,
+        "bird": 149
       }
     },
     "difficulty_distribution": {
       "train": {
-        "Medium": 2291,
-        "Hard": 2225,
-        "Easy": 2223
-      },
-      "test": {
-        "Medium": 490,
-        "Easy": 477,
-        "Hard": 476
-      },
-      "excluded_anomaly": {
-        "Anomaly": 374
+        "Medium": 2380,
+        "Hard": 2312,
+        "Easy": 2310
       },
       "val": {
-        "Medium": 491,
-        "Easy": 477,
-        "Hard": 476
+        "Medium": 511,
+        "Easy": 495,
+        "Hard": 494
+      },
+      "test": {
+        "Medium": 509,
+        "Easy": 495,
+        "Hard": 494
       }
     },
     "groups_spanning_splits": 0,
@@ -139,51 +121,52 @@
       ]
     },
     "soft_statistical_anomalies": 420,
-    "excluded_anomalies": 374,
+    "soft_quality_anomalies": 374,
+    "excluded_anomalies": 0,
     "strata": [
       {
         "split": "train",
         "class_counts": {
-          "dog": 696,
-          "frog": 694,
-          "horse": 693,
-          "cat": 692,
-          "automobile": 689,
-          "truck": 686,
-          "bird": 651,
-          "deer": 651,
-          "ship": 644,
-          "airplane": 643
-        }
-      },
-      {
-        "split": "test",
-        "class_counts": {
-          "dog": 149,
-          "horse": 149,
-          "cat": 148,
-          "frog": 148,
-          "automobile": 147,
-          "truck": 147,
-          "bird": 140,
-          "deer": 139,
-          "airplane": 138,
-          "ship": 138
+          "automobile": 701,
+          "cat": 701,
+          "airplane": 700,
+          "bird": 700,
+          "deer": 700,
+          "dog": 700,
+          "frog": 700,
+          "horse": 700,
+          "ship": 700,
+          "truck": 700
         }
       },
       {
         "split": "val",
         "class_counts": {
-          "dog": 149,
-          "frog": 149,
-          "horse": 149,
-          "automobile": 148,
-          "cat": 148,
-          "truck": 147,
-          "deer": 140,
-          "bird": 139,
-          "ship": 138,
-          "airplane": 137
+          "bird": 151,
+          "airplane": 150,
+          "automobile": 150,
+          "deer": 150,
+          "dog": 150,
+          "frog": 150,
+          "horse": 150,
+          "ship": 150,
+          "truck": 150,
+          "cat": 149
+        }
+      },
+      {
+        "split": "test",
+        "class_counts": {
+          "airplane": 150,
+          "cat": 150,
+          "deer": 150,
+          "dog": 150,
+          "frog": 150,
+          "horse": 150,
+          "ship": 150,
+          "truck": 150,
+          "automobile": 149,
+          "bird": 149
         }
       }
     ],
@@ -193,7 +176,7 @@
   "difficulty_scope": "mixed",
   "difficulty_scopes": {
     "visual_semantic": 9206,
-    "visual_only": 420
+    "visual_only": 794
   },
   "score_interpretation": "Some scored samples include CLIP semantics and others are visual-only; consult difficulty_scope per row.",
   "semantic_runtime": {
@@ -211,26 +194,26 @@
     "failure_count": 0,
     "failure_sample_ids": [],
     "failure_errors": [],
-    "extract_seconds": 9.793688300000213,
+    "extract_seconds": 9.265095199999905,
     "prepare_seconds": 0.0,
-    "metrics_seconds": 0.47094259999721544,
-    "semantic_seconds": 97.12959570000021,
+    "metrics_seconds": 0.5215218000003006,
+    "semantic_seconds": 96.01893799999971,
     "gpu_peak_allocated_mb": null,
     "gpu_peak_reserved_mb": null
   },
   "performance": {
-    "load_seconds": 70.3957760000012,
-    "quality_seconds": 37.9745957999985,
-    "anomaly_seconds": 0.7525277999993705,
-    "semantic_seconds": 97.13353920000009,
-    "scoring_seconds": 1.7697107999993023,
-    "split_seconds": 7.367398900001717,
-    "analysis_seconds": 215.62170659999902,
-    "report_seconds": 2.582019200002833,
-    "total_seconds": 218.20372580000185
+    "load_seconds": 64.31827229999999,
+    "quality_seconds": 83.24321199999986,
+    "anomaly_seconds": 0.824672400000054,
+    "semantic_seconds": 96.02457409999988,
+    "scoring_seconds": 1.9425943999999618,
+    "split_seconds": 7.580850499999997,
+    "analysis_seconds": 254.15005459999975,
+    "report_seconds": 5.381795500000408,
+    "total_seconds": 259.53185010000016
   },
   "provenance": {
-    "git_commit": "d9f20bd58591dbdb32c814a0b84f5d2076fa40c5",
+    "git_commit": "54b38583f924a0b2a1e135eb5b67bcdbeaba98a4",
     "git_dirty": false,
     "repository_root": "E:\\大学\\aiskill\\dataset-difficulty-skill",
     "command": "scripts/analyze_dataset.py validation/.work/cifar10_test --labels validation/.work/cifar10_test/labels.csv --format csv --output validation/cifar10_test --config validation/config_cifar10_test.yaml --semantic-backend clip --clip-model validation/.work/clip_model --device cuda",
@@ -343,6 +326,7 @@
       },
       "exclude_anomalies": true,
       "include_statistical_only": true,
+      "include_quality_outliers": true,
       "ensure_val_test_when_possible": true
     },
     "report": {
@@ -353,9 +337,10 @@
     }
   },
   "warnings": [
-    "420 statistical-only anomalies were retained as valid samples in scoring and splitting."
+    "420 statistical-only anomalies were retained as valid samples in scoring and splitting.",
+    "374 low-quality but readable anomalies were retained as valid samples in scoring and splitting."
   ],
-  "generated_at_utc": "2026-11-11T15:12:59.914096+00:00",
+  "generated_at_utc": "2026-11-12T05:13:07.420886+00:00",
   "input_root": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test",
   "label_file": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\.work\\cifar10_test\\labels.csv",
   "output_directory": "E:\\大学\\aiskill\\dataset-difficulty-skill\\validation\\cifar10_test",

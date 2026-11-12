@@ -125,6 +125,22 @@ def test_json_loader_supports_documented_shapes(tmp_path: Path, payload) -> None
     ]
 
 
+def test_json_loader_reads_group_id(tmp_path: Path) -> None:
+    root = tmp_path / "dataset"
+    _touch(root / "cat" / "a.jpg")
+    labels = tmp_path / "labels.json"
+    labels.write_text(
+        json.dumps(
+            [{"path": "cat/a.jpg", "label": "cat", "group_id": "subject-json"}]
+        ),
+        encoding="utf-8",
+    )
+
+    result = load_dataset(root, label_file=labels, data_format="json")
+
+    assert result.samples.loc[0, "group_id"] == "subject-json"
+
+
 def test_loader_excludes_generated_output_directory(tmp_path: Path) -> None:
     root = tmp_path / "dataset"
     _touch(root / "cat" / "a.jpg")

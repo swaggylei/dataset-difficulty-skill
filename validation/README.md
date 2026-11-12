@@ -33,16 +33,16 @@ Raw CIFAR and CLIP model files are intentionally stored under
 
 ## Interpretation
 
-The 10,000-image run found 794 anomalies and scored 9,626 samples, including
-420 statistical-only soft anomalies. It retained 374 hard anomalies outside
-the split. Hard
+The 10,000-image run scored all 10,000 samples. The 794 anomaly flags split
+into 420 statistical-only and 374 readable quality-flagged soft anomalies;
+both groups remain in scoring and splitting. Hard-excluded anomalies: 0.
 samples visually concentrated around low contrast, small distant objects,
 blur/scale ambiguity, and class-boundary cases. The top examples are
 aviation/deer/bird/dog images with low visual accessibility and elevated
 semantic geometry.
 
-No CLIP extraction failed. The complete first run took 282.1 seconds; model
-preparation was 99.0 seconds, embedding extraction was 83.8 seconds, and CUDA
+No CLIP extraction failed. The initial real extraction took 282.1 seconds;
+model preparation was 99.0 seconds, embedding extraction was 83.8 seconds, and CUDA
 peak memory was 773.5 MiB allocated / 914 MiB reserved.
 
 ## Reproduction Notes

@@ -1,32 +1,32 @@
 {
-  "common_scored_samples": 9626,
-  "mean_v1_score": 0.3985943572231044,
-  "mean_v2_score": 0.4961674546164945,
-  "median_v1_score": 0.392946345872286,
-  "median_v2_score": 0.4882755135484455,
-  "mean_label_contribution_v1": 0.006489727895735099,
+  "common_scored_samples": 10000,
+  "mean_v1_score": 0.3874359584,
+  "mean_v2_score": 0.5024278071,
+  "median_v1_score": 0.38089021882467955,
+  "median_v2_score": 0.4902548163154465,
+  "mean_label_contribution_v1": 0.0,
   "mean_label_contribution_v2": 0.0,
-  "mean_visual_contribution_v1": 0.10516301287193607,
-  "mean_visual_contribution_v2": 0.16140223541848897,
-  "mean_semantic_contribution_v1": 0.28694161645543326,
-  "mean_semantic_contribution_v2": 0.3347652191980054,
-  "spearman_rank_correlation": 0.8905017781709091,
-  "changed_band_count": 2149,
+  "mean_visual_contribution_v1": 0.11122595839999999,
+  "mean_visual_contribution_v2": 0.18018280709999998,
+  "mean_semantic_contribution_v1": 0.27621,
+  "mean_semantic_contribution_v2": 0.322245,
+  "spearman_rank_correlation": 0.7850814816975253,
+  "changed_band_count": 2634,
   "band_transitions": {
     "Easy": {
-      "Easy": 2611,
-      "Hard": 89,
-      "Medium": 477
+      "Easy": 2559,
+      "Hard": 334,
+      "Medium": 407
     },
     "Hard": {
       "Easy": 0,
-      "Hard": 2624,
-      "Medium": 553
+      "Hard": 2557,
+      "Medium": 743
     },
     "Medium": {
-      "Easy": 566,
-      "Hard": 464,
-      "Medium": 2242
+      "Easy": 741,
+      "Hard": 409,
+      "Medium": 2250
     }
   }
 }

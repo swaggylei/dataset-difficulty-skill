@@ -1,23 +1,23 @@
 # V1 vs V2 Key Metrics
 
-Comparison sample: 9,626 scored CIFAR-10 test images, including 420
-statistical-only soft anomalies.
+Comparison sample: all 10,000 CIFAR-10 test images. The current V2 output
+retains 420 statistical-only and 374 readable quality-flagged soft anomalies.
 
 | Metric | V1 | V2 |
 |---|---:|---:|
-| Mean difficulty score | 0.3986 | 0.4962 |
-| Median difficulty score | 0.3929 | 0.4883 |
-| Mean Label Rarity contribution | 0.00649 | 0.00000 |
-| Mean visual contribution | 0.1052 | 0.1614 |
-| Mean semantic contribution | 0.2869 | 0.3348 |
+| Mean difficulty score | 0.3874 | 0.5024 |
+| Median difficulty score | 0.3809 | 0.4903 |
+| Mean Label Rarity contribution | 0.00000 | 0.00000 |
+| Mean visual contribution | 0.1112 | 0.1802 |
+| Mean semantic contribution | 0.2762 | 0.3222 |
 
-- Spearman rank correlation between V1 and V2: `0.8905`
-- Difficulty-band changes: `2,149`
-- Easy -> Medium: `477`
-- Medium -> Easy: `566`
-- Medium -> Hard: `464`
-- Hard -> Medium: `553`
-- Easy -> Hard: `89`
+- Spearman rank correlation between V1 and V2: `0.7851`
+- Difficulty-band changes: `2,634`
+- Easy -> Medium: `407`
+- Medium -> Easy: `741`
+- Medium -> Hard: `409`
+- Hard -> Medium: `743`
+- Easy -> Hard: `334`
 
 The high rank correlation means V2 preserves the broad ordering while making
 the component semantics explicit. Band changes are expected because V2 removes

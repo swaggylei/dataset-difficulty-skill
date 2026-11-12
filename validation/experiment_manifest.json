@@ -2,7 +2,7 @@
   "experiment": "CIFAR-10 test-split difficulty prior",
   "source": {
     "first_run_git_commit": "b6e07dbf8fef5f42e0be7a6269cb1d65fd444903",
-    "artifact_regeneration_git_commit": "d9f20bd58591dbdb32c814a0b84f5d2076fa40c5",
+    "artifact_regeneration_git_commit": "54b38583f924a0b2a1e135eb5b67bcdbeaba98a4",
     "git_dirty_at_run_start": false,
     "config_file": "validation/config_cifar10_test.yaml",
     "config_sha256": "8f07ef68a0f7a7a5be0dafa2589b2c16a29c37748430c704005df642beb81b98",
@@ -33,7 +33,7 @@
     "cache_hit_summary": "validation/cifar10_test/summary_cache_hit.json",
     "anomaly_audit": "validation/anomaly_audit",
     "generated_at_utc": "2026-11-11T15:04:33.733446+00:00",
-    "artifact_regenerated_at_utc": "2026-11-11T15:12:59.914096+00:00",
+    "artifact_regenerated_at_utc": "2026-11-12T05:13:07.420886+00:00",
     "cache_hits": 0,
     "cache_misses": 9206,
     "failure_count": 0,
@@ -44,13 +44,18 @@
     "hard_excluded_anomalies": 374,
     "statistical_only_soft_anomalies": 420,
     "artifact_regeneration_cache_hits": 9206,
-    "artifact_regeneration_cache_misses": 0
+    "artifact_regeneration_cache_misses": 0,
+    "artifact_scored_samples": 10000,
+    "artifact_hard_excluded_anomalies": 0,
+    "artifact_soft_quality_anomalies": 374,
+    "artifact_soft_statistical_anomalies": 420,
+    "artifact_total_seconds": 259.53
   },
   "notes": [
     "The CIFAR-10 run uses the official 10,000-image test split, not all 60,000 images.",
-    "420 statistical-only anomalies are retained as soft anomalies; 374 hard anomalies remain excluded.",
+    "The final artifacts retain 420 statistical-only and 374 readable quality-flagged soft anomalies; hard-excluded anomalies: 0.",
     "The first-run summary is generated from a clean worktree at the committed source.",
-    "The final report artifacts were regenerated from cache at d9f20bd with git_dirty=false.",
+    "The final report artifacts were regenerated from cache at 54b3858 with git_dirty=false.",
     "The model weights and raw dataset are stored under validation/.work and are intentionally not committed.",
     "The committed report artifacts are reproducible with the recorded command and config."
   ]

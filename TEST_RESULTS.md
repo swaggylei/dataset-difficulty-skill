@@ -28,7 +28,7 @@ $env:PYTHONPATH='E:\大学\AIGC\AGIQA-1K\.venv-baselines2\Lib\site-packages'
 Result:
 
 ```text
-71 passed in 26.12s
+75 passed in 23.42s
 ```
 
 Coverage includes:
@@ -41,7 +41,7 @@ Coverage includes:
   augmentations, and seed-sensitive augmentation;
 - CLIP-shaped normalized embeddings, centroid distance, class confusion,
   augmentation instability, and missing semantic values;
-- hard-anomaly isolation, statistical-only soft anomalies, and quantile bands;
+- hard-anomaly isolation, statistical/quality soft anomalies, and quantile bands;
 - zero Label Rarity contribution, explicit component weights/contributions,
   visual-only scope, and descriptive-only entropy/frequency complexity;
 - reproducible class-and-difficulty joint splits, whole-group `group_id`
@@ -52,7 +52,7 @@ Coverage includes:
 - missing explicit group-column failure, prepare-only semantic preflight,
   usable-semantic availability, and explicit before-CSV comparison;
 - CIFAR-10 Parquet export and V1/V2 metric comparison utilities.
-- anomaly category audit and statistical-only soft-anomaly handling.
+- anomaly category audit, and statistical/quality soft-anomaly handling.
 
 ## Skill Validation
 
@@ -105,7 +105,8 @@ CPU cache hit: 38 hits; 0 misses; model not reloaded
 GPU batch-32 first run: 52.44 s; peak VRAM 679.39 MiB allocated / 780 MiB reserved
 GPU cache hit: 38 hits; 0 misses; model not reloaded
 Partial-cache resume: 10 hits, 28 misses, 0 failures
-CIFAR-10 full run: 10,000 images, 9,626 scored, 794 anomalies, 0 CLIP failures
+CIFAR-10 final run: 10,000 images, 10,000 scored, 794 anomaly flags,
+  420 statistical-only + 374 readable quality-flagged soft anomalies, 0 CLIP failures
 CIFAR-10 full run: 282.12 s total; peak VRAM 773.45 MiB allocated / 914 MiB reserved
 CIFAR-10 full-cache rerun: 9,206 hits, 0 misses, model not reloaded
 ```
