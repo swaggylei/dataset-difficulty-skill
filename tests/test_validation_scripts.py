@@ -62,7 +62,7 @@ def test_compare_v1_v2_recomputes_scores_and_band_transitions(
             "label": ["cat"] * 2 + ["dog"] * 6,
             "sample_status": [
                 "Scored",
-                "Scored",
+                "Quality_Flagged",
                 "Scored",
                 "Statistically_Unusual",
                 "Scored",

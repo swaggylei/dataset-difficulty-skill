@@ -78,8 +78,8 @@ Minimal split manifest:
 `difficulty_score`, visual/semantic contributions, `difficulty_scope`,
 `component_coverage`, `split`, `is_anomaly`, `anomaly_types`.
 
-Hard anomalies use `split=excluded_anomaly`. Statistical-only soft anomalies
-retain their normal split when `split.include_statistical_only=true`.
+Hard anomalies use `split=excluded_anomaly`. Statistical-only and readable
+quality-flagged soft anomalies retain their normal split by default.
 
 ## `split_summary.json`
 

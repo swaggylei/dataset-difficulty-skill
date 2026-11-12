@@ -161,11 +161,12 @@ records configured weights, effective weights, contributions, and component
 coverage. Label rarity is reported but contributes zero.
 
 Hard anomalies such as corrupt, empty-label, conflicting-label, duplicate,
-undersized, or quality-flagged samples receive `difficulty_band=Anomaly` and
-are excluded from the split by default. Statistical-only anomalies are kept
-as `Statistically_Unusual` soft anomalies by default: their flag remains in
-the audit outputs, but they participate in difficulty scoring and splitting.
-Set `split.include_statistical_only: false` to restore hard exclusion.
+or undersized samples receive `difficulty_band=Anomaly` and are excluded from
+the split by default. Statistical-only anomalies and low-quality but readable
+images are soft anomalies: they keep their flags as `Statistically_Unusual`
+or `Quality_Flagged`, participate in scoring/splitting, and remain visible in
+anomaly audits. Set `split.include_statistical_only` or
+`split.include_quality_outliers` to `false` to restore hard exclusion.
 
 When CLIP is unavailable, `difficulty_scope=visual_only` and the report states
 that the result is not a complete semantic difficulty assessment.

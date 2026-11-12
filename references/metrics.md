@@ -71,9 +71,10 @@ Configured (`difficulty_*_weight`), effective normalized
 `samples.csv`. Contributions sum to `difficulty_score` for scored samples.
 
 `difficulty_scope` is `visual_semantic` or `visual_only` for scored samples.
-Hard anomalies receive a null `difficulty_score` and `difficulty_band=Anomaly`.
-Statistical-only anomalies are retained as `Statistically_Unusual` and are
-scored by default.
+Hard integrity anomalies receive a null `difficulty_score` and
+`difficulty_band=Anomaly`. Statistical-only anomalies are retained as
+`Statistically_Unusual`; low-quality but readable images are retained as
+`Quality_Flagged`. Both are scored by default.
 
 Default bands use the 33rd and 67th percentiles of scored samples:
 Easy, Medium, Hard. Percentile thresholds are dataset-relative.
@@ -93,9 +94,10 @@ Exact duplicates use content SHA-256. Near duplicates use an 8x8 average-hash
 Hamming distance, capped by `anomaly.near_duplicate.max_samples`.
 Statistical outliers use per-label median/MAD robust z-scores.
 
-By default, `split.include_statistical_only=true`: pure statistical outliers
-are soft anomalies, remain visible in anomaly reports, and enter the joint
-split. Set it to `false` to exclude them.
+By default, `split.include_statistical_only=true` and
+`split.include_quality_outliers=true`: pure statistical outliers and readable
+quality-flagged images are soft anomalies, remain visible in anomaly reports,
+and enter the joint split. Set either option to `false` to exclude that class.
 
 ## Limits
 

@@ -66,7 +66,9 @@ def _spearman_correlation(first: pd.Series, second: pd.Series) -> float:
 
 def recompute_v1(after: pd.DataFrame) -> pd.DataFrame:
     frame = after[
-        after["sample_status"].isin(["Scored", "Statistically_Unusual"])
+        after["sample_status"].isin(
+            ["Scored", "Statistically_Unusual", "Quality_Flagged"]
+        )
     ].copy()
     frame["v1_blur"] = _inverse_percentile(frame["blur_laplacian_var"])
     frame["v1_brightness"] = _percentile((frame["brightness"] - 0.5).abs())

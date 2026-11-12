@@ -120,10 +120,12 @@ If semantic fields are null, state that CLIP was unavailable or disabled.
 Do not infer or invent embeddings. Do not treat poor quality as semantic
 difficulty. Do not merge anomaly labels into Easy/Medium/Hard.
 
-Statistical-only anomalies are soft by default: preserve their anomaly flag
-but retain them in scoring and splitting as `Statistically_Unusual`. Hard
-integrity and quality anomalies remain excluded. Do not describe every
-statistical outlier as invalid data.
+Statistical-only anomalies and low-quality but readable images are soft by
+default: preserve their anomaly flag but retain them in scoring and splitting
+as `Statistically_Unusual` or `Quality_Flagged`. Only hard integrity anomalies
+such as corrupt, conflicting-label, duplicate, or undersized data remain
+excluded by default. Do not describe every statistical or quality outlier as
+invalid data.
 
 For real validation claims, inspect `summary.json["provenance"]`,
 `summary.json["dataset"]`, and `summary.json["semantic_runtime"]`. Check the

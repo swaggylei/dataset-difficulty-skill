@@ -141,14 +141,29 @@ def score_difficulty(
     anomaly_types = frame.get(
         "anomaly_types", pd.Series("", index=frame.index)
     ).fillna("").astype(str)
-    statistical_only_mask = anomaly_mask & anomaly_types.map(
+    reason_sets = anomaly_types.map(
         lambda value: {item for item in value.split(";") if item}
-        == {"statistical_outlier"}
     )
     include_statistical_only = bool(
         config.get("split", {}).get("include_statistical_only", True)
     )
-    soft_anomaly_mask = statistical_only_mask & include_statistical_only
+    include_quality_outliers = bool(
+        config.get("split", {}).get("include_quality_outliers", True)
+    )
+    allowed_soft_reasons = set()
+    if include_statistical_only:
+        allowed_soft_reasons.add("statistical_outlier")
+    if include_quality_outliers:
+        allowed_soft_reasons.add("quality_outlier")
+    soft_anomaly_mask = anomaly_mask & reason_sets.map(
+        lambda reasons: bool(reasons) and reasons.issubset(allowed_soft_reasons)
+    )
+    quality_flagged_mask = soft_anomaly_mask & reason_sets.map(
+        lambda reasons: "quality_outlier" in reasons
+    )
+    statistical_only_mask = anomaly_mask & reason_sets.map(
+        lambda reasons: reasons == {"statistical_outlier"}
+    )
     excluded_mask = anomaly_mask & ~soft_anomaly_mask
     eligible = ~excluded_mask
 
@@ -196,6 +211,7 @@ def score_difficulty(
         "component_coverage",
         "excluded_from_split",
         "is_statistical_only_anomaly",
+        "is_quality_flagged_anomaly",
     ):
         frame[component] = np.nan
 
@@ -283,6 +299,7 @@ def score_difficulty(
     frame["label_rarity_contribution"] = 0.0
     frame["label_rarity_in_difficulty"] = False
     frame["is_statistical_only_anomaly"] = statistical_only_mask
+    frame["is_quality_flagged_anomaly"] = quality_flagged_mask
     frame["excluded_from_split"] = excluded_mask
 
     weights = config.get("difficulty", {}).get("weights", {})
@@ -331,10 +348,11 @@ def score_difficulty(
     frame["sample_status"] = np.select(
         [
             excluded_mask,
+            quality_flagged_mask,
             soft_anomaly_mask,
             frame["difficulty_score"].notna(),
         ],
-        ["Anomaly", "Statistically_Unusual", "Scored"],
+        ["Anomaly", "Quality_Flagged", "Statistically_Unusual", "Scored"],
         default="Unscored",
     )
     return frame

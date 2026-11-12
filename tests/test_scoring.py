@@ -401,3 +401,38 @@ def test_visual_only_renormalizes_effective_weight_to_one() -> None:
         scored["difficulty_score"],
         scored["visual_contribution"],
     )
+
+
+def test_quality_outlier_valid_is_soft_by_default_and_scored() -> None:
+    samples, quality, semantic = _inputs()
+    samples = samples.copy()
+    samples.loc[4, "is_anomaly"] = True
+    samples.loc[4, "anomaly_types"] = "quality_outlier"
+    quality = quality.copy()
+    quality.loc[4, "quality_issue_flags"] = "blurred"
+
+    result = score_difficulty(samples, quality, semantic, load_config())
+
+    assert result.loc[4, "sample_status"] == "Quality_Flagged"
+    assert result.loc[4, "difficulty_band"] != "Anomaly"
+    assert np.isfinite(result.loc[4, "difficulty_score"])
+    assert result.loc[4, "excluded_from_split"] == False
+    assert result.loc[4, "quality_issue_flags"] == "blurred"
+
+
+def test_quality_outlier_can_be_hard_excluded_by_configuration() -> None:
+    samples, quality, semantic = _inputs()
+    samples = samples.copy()
+    samples.loc[4, "is_anomaly"] = True
+    samples.loc[4, "anomaly_types"] = "quality_outlier"
+    quality = quality.copy()
+    quality.loc[4, "quality_issue_flags"] = "blurred"
+    config = load_config(
+        overrides={"split": {"include_quality_outliers": False}}
+    )
+
+    result = score_difficulty(samples, quality, semantic, config)
+
+    assert result.loc[4, "sample_status"] == "Anomaly"
+    assert result.loc[4, "difficulty_band"] == "Anomaly"
+    assert np.isnan(result.loc[4, "difficulty_score"])

@@ -78,6 +78,7 @@ split:
     test: 0.15
   exclude_anomalies: true
   include_statistical_only: true
+  include_quality_outliers: true
   ensure_val_test_when_possible: true
 
 report:

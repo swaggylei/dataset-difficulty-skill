@@ -22,9 +22,9 @@ unusual, so the reason counts are 374 `quality_outlier` and 532
 
 The 50 preview images were inspected: no unreadable files were found;
 statistical-only examples include visible but unusual CIFAR objects such as
-aircraft, birds, cats, and vehicles. They are retained as
-`Statistically_Unusual` soft anomalies and are eligible for the split by
-default. Low-quality samples remain valid images but have quality flags.
+aircraft, birds, cats, and vehicles. Statistical-only samples are retained as
+`Statistically_Unusual`, and low-quality readable samples are retained as
+`Quality_Flagged`. Both are eligible for the split by default.
 
 Artifacts:
 

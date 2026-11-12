@@ -433,7 +433,9 @@ def _build_summary(
     split_counts = samples["split"].value_counts().to_dict()
     class_counts = samples["label"].fillna("").replace("", "<empty>").value_counts()
     scored = samples[
-        samples["sample_status"].isin(["Scored", "Statistically_Unusual"])
+        samples["sample_status"].isin(
+            ["Scored", "Statistically_Unusual", "Quality_Flagged"]
+        )
     ]
     scope_counts = scored["difficulty_scope"].value_counts().to_dict()
     scored_scopes = set(scope_counts)
@@ -466,6 +468,7 @@ def _build_summary(
             "scored": int(
                 status_counts.get("Scored", 0)
                 + status_counts.get("Statistically_Unusual", 0)
+                + status_counts.get("Quality_Flagged", 0)
             ),
             "unscored": int(status_counts.get("Unscored", 0)),
             "semantic_available": int(
@@ -584,7 +587,6 @@ def analyze_dataset(
     scoring_started = time.perf_counter()
     scored = score_difficulty(anomalous, quality, semantic, config)
     scoring_seconds = time.perf_counter() - scoring_started
-    scored_rows = scored["sample_status"].eq("Scored")
     soft_anomaly_count = int(
         scored["sample_status"].eq("Statistically_Unusual").sum()
     )
@@ -593,7 +595,20 @@ def analyze_dataset(
             f"{soft_anomaly_count} statistical-only anomalies were retained "
             "as valid samples in scoring and splitting."
         )
-    if scored_rows.any() and not scored.loc[scored_rows, "semantic_available"].any():
+    quality_anomaly_count = int(
+        scored["sample_status"].eq("Quality_Flagged").sum()
+    )
+    if quality_anomaly_count:
+        pipeline_warnings.append(
+            f"{quality_anomaly_count} low-quality but readable anomalies were "
+            "retained as valid samples in scoring and splitting."
+        )
+    soft_scored_rows = scored["sample_status"].isin(
+        ["Scored", "Statistically_Unusual", "Quality_Flagged"]
+    )
+    if soft_scored_rows.any() and not scored.loc[
+        soft_scored_rows, "semantic_available"
+    ].any():
         semantic_warnings.append(
             "Difficulty score is visual-only because CLIP semantics are unavailable; "
             "it is not a complete semantic difficulty assessment."

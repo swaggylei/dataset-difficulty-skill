@@ -177,7 +177,7 @@ def _build_html(
     split_diagnostics = summary.get("split_diagnostics", {})
     scored = result.samples[
         result.samples["sample_status"].isin(
-            ["Scored", "Statistically_Unusual"]
+            ["Scored", "Statistically_Unusual", "Quality_Flagged"]
         )
     ].sort_values("difficulty_score", ascending=False)
     anomalies = result.samples[
@@ -371,7 +371,7 @@ def write_reports(
 
     scored = result.samples[
         result.samples["sample_status"].isin(
-            ["Scored", "Statistically_Unusual"]
+            ["Scored", "Statistically_Unusual", "Quality_Flagged"]
         )
     ].sort_values("difficulty_score", ascending=False)
     anomalies = result.samples[

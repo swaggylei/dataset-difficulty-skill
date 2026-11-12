@@ -369,6 +369,9 @@ def assign_splits(
         "soft_statistical_anomalies": int(
             frame["sample_status"].eq("Statistically_Unusual").sum()
         ),
+        "soft_quality_anomalies": int(
+            frame["sample_status"].eq("Quality_Flagged").sum()
+        ),
         "excluded_anomalies": int((frame["split"] == "excluded_anomaly").sum()),
         "strata": strata_summary,
         "warnings": warnings,
